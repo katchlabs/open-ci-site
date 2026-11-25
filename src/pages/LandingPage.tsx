@@ -1,19 +1,17 @@
 import { Hero } from '../components/landing/Hero';
+import { ScrollStory } from '../components/landing/ScrollStory';
 import { SavingsCalculator } from '../components/landing/SavingsCalculator';
-import { BenchmarkStrip } from '../components/landing/BenchmarkStrip';
-import { WorkflowWiring } from '../components/landing/WorkflowWiring';
-import { FeatureBento } from '../components/landing/FeatureBento';
-import { TradeoffsSection } from '../components/landing/TradeoffsSection';
+import { ProviderComparison } from '../components/landing/ProviderComparison';
+import { ClosingCta } from '../components/landing/ClosingCta';
 
 export function LandingPage() {
   return (
     <main>
       <Hero />
+      <ScrollStory />
       <SavingsCalculator />
-      <BenchmarkStrip />
-      <WorkflowWiring />
-      <FeatureBento />
-      <TradeoffsSection />
+      <ProviderComparison />
+      <ClosingCta />
     </main>
   );
 }

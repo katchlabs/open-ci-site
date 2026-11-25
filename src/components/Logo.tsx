@@ -1,44 +1,44 @@
 interface LogoProps {
   className?: string;
+  inverted?: boolean;
 }
 
-export function Logo({ className = '' }: LogoProps) {
+/** Cobalt geometric mark: a runner bracket + launch chevron, set in a soft square. */
+export function Logo({ className = '', inverted = false }: LogoProps) {
+  const tile = inverted ? '#FFFFFF' : '#2563EB';
+  const glyph = inverted ? '#2563EB' : '#FFFFFF';
+  const textClass = inverted ? 'text-[#FFFFFF]' : 'text-[#0A0A0A]';
+
   return (
-    <span className={`inline-flex items-center gap-2.5 select-none ${className}`}>
+    <span className={`inline-flex items-center gap-2 select-none ${className}`}>
       <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+        viewBox="0 0 32 32"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         className="shrink-0"
       >
-        <rect
-          x="1"
-          y="1"
-          width="22"
-          height="22"
-          rx="4"
-          stroke="#111111"
-          strokeWidth="1.5"
-        />
+        <rect width="32" height="32" rx="8" fill={tile} />
         <path
-          d="M7 7.5H10V16.5H7"
-          stroke="#111111"
-          strokeWidth="1.6"
+          d="M10 10.5H13.75V21.5H10"
+          stroke={glyph}
+          strokeWidth="2.4"
           strokeLinecap="square"
           strokeLinejoin="miter"
         />
         <path
-          d="M12.5 8.5L16.75 12L12.5 15.5"
-          stroke="#111111"
-          strokeWidth="1.6"
+          d="M17 11.5L22.25 16L17 20.5"
+          stroke={glyph}
+          strokeWidth="2.4"
           strokeLinecap="square"
           strokeLinejoin="miter"
         />
       </svg>
-      <span className="font-sans text-[15px] font-medium tracking-[-0.02em] text-[#111111]">
+      <span
+        className={`font-sans text-[16px] font-semibold tracking-[-0.03em] ${textClass}`}
+      >
         open-ci
       </span>
     </span>

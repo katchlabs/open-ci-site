@@ -15,7 +15,7 @@ function highlightLine(line: string, lang: string): ReactNode {
   const trimmed = line.trimStart();
 
   if (trimmed.startsWith('#') || (lang === 'sql' && trimmed.startsWith('--'))) {
-    return <span className="text-[#8A8A82]">{line}</span>;
+    return <span className="text-[#9CA3AF]">{line}</span>;
   }
 
   if ((lang === 'toml' || lang === 'ini') && /^\[+[^\]]+\]+/.test(trimmed)) {
@@ -28,9 +28,9 @@ function highlightLine(line: string, lang: string): ReactNode {
       const [, indent, key, colon, space, rest] = match;
       return (
         <>
-          <span className="text-[#8A8A82]">{indent}</span>
-          <span className="text-[#F5F5F2]">{key}</span>
-          <span className="text-[#8A8A82]">{colon}</span>
+          <span className="text-[#9CA3AF]">{indent}</span>
+          <span className="text-[#F7F8FA]">{key}</span>
+          <span className="text-[#9CA3AF]">{colon}</span>
           {space}
           {highlightValue(rest)}
         </>
@@ -45,8 +45,8 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#F5F5F2]">{key}</span>
-          <span className="text-[#8A8A82]">{eq}</span>
+          <span className="text-[#F7F8FA]">{key}</span>
+          <span className="text-[#9CA3AF]">{eq}</span>
           {highlightValue(rest)}
         </>
       );
@@ -60,8 +60,8 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#F5F5F2]">{key}</span>
-          <span className="text-[#8A8A82]">{colon}</span>
+          <span className="text-[#F7F8FA]">{key}</span>
+          <span className="text-[#9CA3AF]">{colon}</span>
           {highlightValue(rest)}
         </>
       );
@@ -76,7 +76,7 @@ function highlightLine(line: string, lang: string): ReactNode {
           {part}
         </span>
       ) : (
-        <span key={i} className="text-[#E2E2DC]">
+        <span key={i} className="text-[#E5E7EB]">
           {part}
         </span>
       )
@@ -102,7 +102,7 @@ function highlightLine(line: string, lang: string): ReactNode {
           {subParts.map((sp, j) => {
             if (/^\s--?[a-zA-Z0-9_-]+$/.test(sp)) {
               return (
-                <span key={j} className="text-[#C8C8BE]">
+                <span key={j} className="text-[#C5CAD3]">
                   {sp}
                 </span>
               );
@@ -115,14 +115,14 @@ function highlightLine(line: string, lang: string): ReactNode {
                 return (
                   <span key={j}>
                     {cmdMatch[1]}
-                    <span className="text-[#F5F5F2]">{cmdMatch[2]}</span>
-                    <span className="text-[#D4D4CC]">{cmdMatch[3]}</span>
+                    <span className="text-[#F7F8FA]">{cmdMatch[2]}</span>
+                    <span className="text-[#D1D5DB]">{cmdMatch[3]}</span>
                   </span>
                 );
               }
             }
             return (
-              <span key={j} className="text-[#D4D4CC]">
+              <span key={j} className="text-[#D1D5DB]">
                 {sp}
               </span>
             );
@@ -132,7 +132,7 @@ function highlightLine(line: string, lang: string): ReactNode {
     });
   }
 
-  return <span className="text-[#E2E2DC]">{line}</span>;
+  return <span className="text-[#E5E7EB]">{line}</span>;
 }
 
 function highlightValue(val: string): ReactNode {
@@ -157,7 +157,7 @@ function highlightValue(val: string): ReactNode {
   return (
     <>
       {rendered}
-      {comment && <span className="text-[#8A8A82]">{comment}</span>}
+      {comment && <span className="text-[#9CA3AF]">{comment}</span>}
     </>
   );
 }
@@ -198,17 +198,17 @@ export function CodeBlock({
 
   return (
     <div
-      className={`overflow-hidden rounded-lg border border-[#262624] bg-[#141413] text-[#F5F5F2] ${className}`}
+      className={`overflow-hidden rounded-lg border border-[#262624] bg-[#141413] text-[#F7F8FA] ${className}`}
     >
       {!compact && (
         <div className="flex items-center justify-between border-b border-[#262624] px-4 py-2.5">
-          <span className="font-mono text-[11px] text-[#9A9A90]">
+          <span className="font-mono text-[11px] text-[#9CA3AF]">
             {filename ?? lang}
           </span>
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-0.5 font-mono text-[11px] text-[#C8C8BE] transition-colors duration-150 hover:border-[#444440] hover:text-[#F5F5F2] active:scale-[0.98] cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-0.5 font-mono text-[11px] text-[#C5CAD3] transition-colors duration-150 hover:border-[#374151] hover:text-[#F7F8FA] active:scale-[0.98] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
@@ -231,7 +231,7 @@ export function CodeBlock({
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-1 font-mono text-[11px] text-[#C8C8BE] transition-colors hover:text-[#F5F5F2] cursor-pointer"
+            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-1 font-mono text-[11px] text-[#C5CAD3] transition-colors hover:text-[#F7F8FA] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
@@ -264,7 +264,7 @@ export function CodeBlock({
                   className={`flex min-h-[1.35rem] ${compact ? '' : 'px-4'} ${rowClass}`}
                 >
                   {showLineNumbers && (
-                    <span className="mr-3 inline-block w-5 shrink-0 select-none text-right text-[#62625B] tabular-nums">
+                    <span className="mr-3 inline-block w-5 shrink-0 select-none text-right text-[#5B6472] tabular-nums">
                       {lineNo}
                     </span>
                   )}
