@@ -105,7 +105,7 @@ const RAW_DOCS: Omit<DocPage, 'headings'>[] = [
     slug: 'architecture',
     path: '/docs/architecture',
     title: 'Architecture & HTTP API',
-    shortTitle: 'Architecture & API',
+    shortTitle: 'Architecture & HTTP API',
     section: 'Reference & Security',
     description:
       'Hexagonal Rust workspace layout, SQLite WAL durability, multi-cloud placement backoff, and exact HTTP/Prometheus/SSE endpoints.',

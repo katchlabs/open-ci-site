@@ -1,193 +1,117 @@
 import { Link } from 'react-router-dom';
-import {
-  ArrowUpRight,
-  Cloud,
-  Cpu,
-  HardDrive,
-  KeyRound,
-  Lock,
-} from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+
+interface SpecCell {
+  index: string;
+  title: string;
+  body: string;
+  spec: string;
+  href: string;
+}
+
+const SPEC_CELLS: SpecCell[] = [
+  {
+    index: '01',
+    title: 'Direct cloud provisioning',
+    body: 'Pure-Rust EC2 SigV4 XML and Compute Engine REST adapters with zero CLI subprocesses. Weighted placement backs off stocked-out zones for 90s and spills across AZs or clouds.',
+    spec: 'EC2 SigV4 · GCE REST · Idempotent ClientToken',
+    href: '/docs/architecture',
+  },
+  {
+    index: '02',
+    title: 'Built-in Actions v2 cache',
+    body: 'Twirp and blob cache server verified against the official @actions/cache client. Authorizes jobs with ACTIONS_RUNTIME_TOKEN and scopes entries per repository and Git ref.',
+    spec: 'Local NVMe · S3 / R2 / MinIO · Native GCS',
+    href: '/docs/caching',
+  },
+  {
+    index: '03',
+    title: 'Auto-NVMe scratch striping',
+    body: 'Boot-time discovery formats and stripes attached local NVMe devices into RAID0 automatically. Routes Docker layers, RUNNER_WORKDIR, and TMPDIR onto fast ephemeral storage.',
+    spec: 'EXT4 / RAID0 /mnt/nvme · zero workflow edits',
+    href: '/docs/caching',
+  },
+  {
+    index: '04',
+    title: 'Zero-IAM ephemeral workers',
+    body: 'Treats every CI job as untrusted code. Workers boot without cloud credentials or inbound ports, scrub user-data prior to job start, and burn a single-use HMAC bootstrap token.',
+    spec: 'serviceAccounts: [] · IMDSv2 · 1× HMAC',
+    href: '/docs/security',
+  },
+  {
+    index: '05',
+    title: 'Keyless org-wide BYOC',
+    body: 'Serve one repository or an entire GitHub organization with repository allowlists and runner groups. Authenticates via cross-account AssumeRole, SA impersonation, or web identity.',
+    spec: 'AssumeRole + ExternalId · zero static keys',
+    href: '/docs/quickstart',
+  },
+  {
+    index: '06',
+    title: 'Strict Rust & 7-gate proof',
+    body: 'Zero-I/O hexagonal core backed by SQLite WAL with fs2 file locking. Verified on every commit by proptest state invariants, concurrency races, and compiled-binary HTTP assertions.',
+    spec: 'unsafe_code = "forbid" · unwrap_used = "deny"',
+    href: '/docs/engineering',
+  },
+];
 
 export function FeatureBento() {
   return (
-    <section
-      id="features"
-      className="scroll-mt-20 border-b border-[#1E2636] bg-[#0B0E16]/50 py-20 lg:py-24"
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
-          <div className="font-mono text-xs font-semibold uppercase tracking-wider text-[#F97316]">
-            Engineered From First Principles
+    <section id="architecture" className="scroll-mt-16 border-b border-[#E4E4DF]">
+      <div className="mx-auto max-w-[1160px] px-5 py-20 sm:px-8 lg:py-24">
+        <div className="max-w-2xl">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            04 / ARCHITECTURE
           </div>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-[#F8FAFC] sm:text-4xl">
-            Every layer built for Spot resilience, speed, and hostile CI workloads.
+          <h2 className="mt-3 font-sans text-[28px] font-medium leading-[1.12] tracking-[-0.025em] text-[#111111] sm:text-[38px]">
+            Built as one modular system.
           </h2>
-          <p className="mt-3 text-base text-[#94A3B8]">
-            No brittle shell wrappers around cloud CLIs. No third-party control
-            planes holding your GitHub tokens. One modular Rust workspace with
-            hexagonal boundaries.
+          <p className="mt-3 text-[15px] leading-[1.6] text-[#555550]">
+            No third-party control plane holding your GitHub tokens. No shell
+            wrappers around cloud CLIs.
           </p>
         </div>
 
-        {/* 5-card precision Bento Grid */}
-        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-6">
-          {/* Card 1: Multi-cloud pure-Rust (span 3) */}
-          <div className="group flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 transition hover:border-[#2A354B] md:col-span-3">
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#F97316]/30 bg-[#F97316]/10 text-[#F97316]">
-                  <Cloud className="h-5 w-5" />
-                </div>
-                <span className="rounded-full border border-[#1E2636] bg-[#090B10] px-2.5 py-0.5 font-mono text-[11px] text-[#94A3B8]">
-                  EC2 SigV4 + GCE REST
-                </span>
-              </div>
-              <h3 className="mt-5 font-display text-xl font-bold text-[#F8FAFC]">
-                Multi-Cloud Pure-Rust Provisioning
-              </h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-[#94A3B8]">
-                Direct AWS EC2/STS SigV4 XML and GCP Compute Engine REST adapters
-                with zero <code className="text-[#CBD5E1]">aws</code> or{' '}
-                <code className="text-[#CBD5E1]">gcloud</code> subprocesses.
-                Weighted multi-cloud placement automatically backs off stocked-out
-                Spot zones (90s) or quotas (300s) and spills cleanly across AZs,
-                machine families, or clouds.
-              </p>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-2 font-mono text-[11px] text-[#CBD5E1]">
-              <span className="rounded-md border border-[#1E2636] bg-[#090B10] px-2.5 py-1">
-                x86_64 &amp; ARM64 Graviton
-              </span>
-              <span className="rounded-md border border-[#1E2636] bg-[#090B10] px-2.5 py-1">
-                Spot + On-Demand mix
-              </span>
-              <span className="rounded-md border border-[#1E2636] bg-[#090B10] px-2.5 py-1">
-                Idempotent ClientToken
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: Transparent Actions v2 Cache + Auto-NVMe (span 3) */}
-          <div className="group flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 transition hover:border-[#2A354B] md:col-span-3">
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981]">
-                  <HardDrive className="h-5 w-5" />
-                </div>
-                <span className="rounded-full border border-[#10B981]/30 bg-[#10B981]/10 px-2.5 py-0.5 font-mono text-[11px] text-[#10B981]">
-                  open-ci cache + RAID0
-                </span>
-              </div>
-              <h3 className="mt-5 font-display text-xl font-bold text-[#F8FAFC]">
-                Transparent Actions v2 Cache &amp; Auto-NVMe
-              </h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-[#94A3B8]">
-                Built-in Twirp + Azure blob cache server verified against the
-                official <code className="text-[#CBD5E1]">@actions/cache</code>{' '}
-                client. Authorizes each job with its own{' '}
-                <code className="text-[#CBD5E1]">ACTIONS_RUNTIME_TOKEN</code>,
-                isolates entries per repo &amp; Git ref, streams to local NVMe,
-                S3/R2/MinIO, or native GCS, and auto-stripes local NVMe SSDs into
-                RAID0 for Docker layers, <code className="text-[#CBD5E1]">RUNNER_WORKDIR</code>,
-                and <code className="text-[#CBD5E1]">TMPDIR</code>.
-              </p>
-            </div>
-            <div className="mt-5 flex items-center justify-between border-t border-[#1E2636] pt-4">
-              <span className="font-mono text-[11px] text-[#94A3B8]">
-                Works with actions/cache, setup-*, rust-cache, BuildKit
-              </span>
+        {/* Flat 3x2 hairline-ruled specification grid — every cell links directly to its docs */}
+        <div className="mt-10 overflow-hidden rounded-lg border border-[#E4E4DF] bg-[#FFFFFF]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {SPEC_CELLS.map((cell, idx) => (
               <Link
-                to="/docs/caching"
-                className="inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#10B981] hover:underline"
+                key={cell.index}
+                to={cell.href}
+                className={`group flex flex-col justify-between p-6 transition-colors duration-150 hover:bg-[#FAFAF8] sm:p-7 ${
+                  idx > 0 ? 'border-t border-[#E4E4DF]' : ''
+                } ${
+                  idx === 1 ? 'md:border-t-0' : ''
+                } ${
+                  idx === 2 ? 'lg:border-t-0' : ''
+                } ${
+                  idx % 2 === 1 ? 'md:border-l md:border-[#E4E4DF]' : ''
+                } ${
+                  idx % 3 !== 0 ? 'lg:border-l lg:border-[#E4E4DF]' : 'lg:border-l-0'
+                }`}
               >
-                Caching docs
-                <ArrowUpRight className="h-3.5 w-3.5" />
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] text-[#6E6E67] tabular-nums">
+                      {cell.index}
+                    </span>
+                    <ArrowUpRight className="h-4 w-4 text-[#B5B5AD] transition-colors duration-150 group-hover:text-[#111111]" />
+                  </div>
+
+                  <h3 className="mt-4 font-sans text-[16px] font-medium tracking-[-0.015em] text-[#111111]">
+                    {cell.title}
+                  </h3>
+
+                  <p className="mt-2 text-[13.5px] leading-[1.6] text-[#555550]">
+                    {cell.body}
+                  </p>
+                </div>
+
+                <div className="mt-6 border-t border-[#E4E4DF] pt-3.5 font-mono text-[11px] text-[#6E6E67]">
+                  {cell.spec}
+                </div>
               </Link>
-            </div>
-          </div>
-
-          {/* Card 3: Zero-IAM Defense-in-Depth (span 2) */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 transition hover:border-[#2A354B] md:col-span-2">
-            <div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#F97316]/30 bg-[#F97316]/10 text-[#F97316]">
-                <Lock className="h-5 w-5" />
-              </div>
-              <h3 className="mt-5 font-display text-lg font-bold text-[#F8FAFC]">
-                Zero-IAM Defense-in-Depth
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#94A3B8]">
-                Assumes CI jobs are hostile. Workers boot with{' '}
-                <code className="text-[#CBD5E1]">serviceAccounts: []</code> on
-                GCP, no instance profile + IMDSv2 enforced on AWS, zero inbound
-                ports, scrubbed user-data, single-use atomic SQLite HMAC
-                bootstrap, and triple-layer expiry (reconciler +{' '}
-                <code className="text-[#CBD5E1]">maxRunDuration</code> / AWS
-                Lambda janitor + guest poweroff).
-              </p>
-            </div>
-            <Link
-              to="/docs/security"
-              className="mt-5 inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#F97316] hover:text-[#FB923C]"
-            >
-              Read Threat Model
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          {/* Card 4: Org-Wide & BYOC Keyless Identity (span 2) */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 transition hover:border-[#2A354B] md:col-span-2">
-            <div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-sky-500/30 bg-sky-500/10 text-sky-400">
-                <KeyRound className="h-5 w-5" />
-              </div>
-              <h3 className="mt-5 font-display text-lg font-bold text-[#F8FAFC]">
-                Org-Wide &amp; Keyless BYOC
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#94A3B8]">
-                Serve one repo or an entire GitHub organization with{' '}
-                <code className="text-[#CBD5E1]">allowed_repositories</code> and{' '}
-                <code className="text-[#CBD5E1]">runner_group_id</code>. Supports
-                cross-account AWS <code className="text-[#CBD5E1]">AssumeRole</code>{' '}
-                + <code className="text-[#CBD5E1]">ExternalId</code>, GCP SA
-                impersonation, and keyless GCP→AWS web identity federation — zero
-                static cloud keys on disk.
-              </p>
-            </div>
-            <Link
-              to="/docs/quickstart"
-              className="mt-5 inline-flex items-center gap-1 font-mono text-xs font-semibold text-sky-400 hover:text-sky-300"
-            >
-              Terraform Modules
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          {/* Card 5: Strict Rust Engineering (span 2) */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 transition hover:border-[#2A354B] md:col-span-2">
-            <div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981]">
-                <Cpu className="h-5 w-5" />
-              </div>
-              <h3 className="mt-5 font-display text-lg font-bold text-[#F8FAFC]">
-                Strict Rust Engineering
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#94A3B8]">
-                Compiles under <code className="text-[#CBD5E1]">unsafe_code = "forbid"</code>,{' '}
-                <code className="text-[#CBD5E1]">unwrap_used = "deny"</code>,{' '}
-                <code className="text-[#CBD5E1]">expect_used = "deny"</code>, and{' '}
-                <code className="text-[#CBD5E1]">panic = "deny"</code>. Verified
-                by a 7-gate proof ladder including <code className="text-[#CBD5E1]">proptest</code>{' '}
-                invariants, SQLite WAL races, and real compiled-binary HTTP + DB
-                assertions.
-              </p>
-            </div>
-            <Link
-              to="/docs/engineering"
-              className="mt-5 inline-flex items-center gap-1 font-mono text-xs font-semibold text-[#10B981] hover:underline"
-            >
-              7-Gate Proof Ladder
-              <ArrowUpRight className="h-3.5 w-3.5" />
-            </Link>
+            ))}
           </div>
         </div>
       </div>

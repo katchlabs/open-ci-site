@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { Calculator, Info, Sparkles, TrendingDown } from 'lucide-react';
 import {
   CALCULATOR_PRESETS,
   CLOUD_PROFILES,
@@ -11,384 +10,387 @@ import {
 } from '../../data/pricing';
 
 const VCPU_OPTIONS: RunnerVcpu[] = [4, 8, 16];
-const CLOUD_OPTIONS: CloudProfileId[] = ['gcp-x64', 'aws-x64', 'aws-arm64'];
+const CLOUD_OPTIONS: { id: CloudProfileId; label: string }[] = [
+  { id: 'gcp-x64', label: 'GCP Spot x64' },
+  { id: 'aws-x64', label: 'AWS Spot x64' },
+  { id: 'aws-arm64', label: 'AWS Graviton ARM64' },
+];
+
+const PRESET_LABELS: Record<string, { name: string; meta: string }> = {
+  startup: { name: 'Startup', meta: '10 devs' },
+  growth: { name: 'Growth', meta: '40 devs' },
+  monorepo: { name: 'Scale', meta: '150 devs' },
+};
 
 export function SavingsCalculator() {
-  const [activePreset, setActivePreset] = useState<string>('growth');
-  const [monthlyMinutes, setMonthlyMinutes] = useState<number>(200_000);
-  const [vcpu, setVcpu] = useState<RunnerVcpu>(4);
-  const [cloudProfile, setCloudProfile] = useState<CloudProfileId>('gcp-x64');
-  const [speedupPercent, setSpeedupPercent] = useState<number>(0);
+  const defaultPreset = CALCULATOR_PRESETS[1];
+  const [activePresetId, setActivePresetId] = useState<string | null>(defaultPreset.id);
+  const [monthlyMinutes, setMonthlyMinutes] = useState<number>(defaultPreset.monthlyMinutes);
+  const [vcpu, setVcpu] = useState<RunnerVcpu>(defaultPreset.vcpu);
+  const [cloudProfile, setCloudProfile] = useState<CloudProfileId>(defaultPreset.cloudProfile);
+  const [speedupPercent, setSpeedupPercent] = useState<number>(defaultPreset.speedupPercent);
+
+  const costs = useMemo(
+    () => calculateCosts(monthlyMinutes, vcpu, cloudProfile, speedupPercent),
+    [monthlyMinutes, vcpu, cloudProfile, speedupPercent]
+  );
 
   const applyPreset = (presetId: string) => {
     const preset = CALCULATOR_PRESETS.find((p) => p.id === presetId);
     if (!preset) return;
-    setActivePreset(preset.id);
+    setActivePresetId(preset.id);
     setMonthlyMinutes(preset.monthlyMinutes);
     setVcpu(preset.vcpu);
     setCloudProfile(preset.cloudProfile);
     setSpeedupPercent(preset.speedupPercent);
   };
 
-  const result = useMemo(
-    () => calculateCosts(monthlyMinutes, vcpu, cloudProfile, speedupPercent),
-    [monthlyMinutes, vcpu, cloudProfile, speedupPercent]
-  );
+  const githubAnnual = costs.githubMonthly * 12;
+  const saasAnnual = costs.managedSaasMonthly * 12;
+  const openCiAnnual = costs.openCiMonthly * 12;
+  const saasDeltaAnnual = Math.max(0, githubAnnual - saasAnnual);
 
-  const maxCost = Math.max(result.githubMonthly, result.managedSaasMonthly, result.openCiMonthly, 1);
+  const maxAnnual = Math.max(githubAnnual, saasAnnual, openCiAnnual, 1);
+  const githubWidth = Math.max(4, Math.round((githubAnnual / maxAnnual) * 100));
+  const saasWidth = Math.max(4, Math.round((saasAnnual / maxAnnual) * 100));
+  const openCiWidth = Math.max(3, Math.round((openCiAnnual / maxAnnual) * 100));
+
+  const activeProfile = CLOUD_PROFILES[cloudProfile];
 
   return (
-    <section
-      id="savings"
-      className="relative scroll-mt-20 border-b border-[#1E2636] py-20 lg:py-24"
-    >
-      <div className="pointer-events-none absolute inset-0 bg-radial-emerald opacity-55" />
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider text-[#10B981]">
-            <Calculator className="h-3.5 w-3.5" />
-            Interactive CI Savings Calculator
+    <section id="savings" className="scroll-mt-16 border-b border-[#E4E4DF]">
+      <div className="mx-auto max-w-[1160px] px-5 py-20 sm:px-8 lg:py-24">
+        <div className="max-w-2xl">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            01 / SAVINGS
           </div>
-          <h2 className="mt-2 font-display text-3xl font-extrabold text-[#F8FAFC] sm:text-4xl">
-            Stop paying 5×–8× markup on cloud compute.
+          <h2 className="mt-3 font-sans text-[28px] font-medium leading-[1.12] tracking-[-0.025em] text-[#111111] sm:text-[38px]">
+            What your CI bill actually costs.
           </h2>
-          <p className="mt-3 text-base text-[#94A3B8]">
-            Compare verified 2026 per-minute rates for GitHub Actions and
-            managed third-party runner SaaS against running{' '}
-            <code className="text-[#F8FAFC]">open-ci</code> directly on Spot
-            instances in your own AWS or GCP account.
+          <p className="mt-3 text-[15px] leading-[1.6] text-[#555550]">
+            Compare published GitHub Actions and managed runner SaaS rates
+            against raw AWS and GCP Spot compute plus one control-plane VM.
           </p>
         </div>
 
-        {/* Preset pills */}
-        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {CALCULATOR_PRESETS.map((preset) => {
-            const isSelected = activePreset === preset.id;
-            const preview = calculateCosts(
-              preset.monthlyMinutes,
-              preset.vcpu,
-              preset.cloudProfile,
-              0
-            );
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => applyPreset(preset.id)}
-                className={`flex flex-col items-start rounded-xl border p-4 text-left transition cursor-pointer ${
-                  isSelected
-                    ? 'border-[#F97316] bg-[#F97316]/10 shadow-lg shadow-[#F97316]/5'
-                    : 'border-[#1E2636] bg-[#111520] hover:border-[#2A354B]'
-                }`}
-              >
-                <div className="flex w-full items-center justify-between">
-                  <span className="font-display text-sm font-bold text-[#F8FAFC]">
-                    {preset.name}
-                  </span>
-                  <span className="rounded-full bg-[#10B981]/15 px-2 py-0.5 font-mono text-[11px] font-semibold text-[#10B981]">
-                    Save {preview.savingsVsGithubPct}%
-                  </span>
+        <div className="mt-10 overflow-hidden rounded-lg border border-[#E4E4DF] bg-[#FFFFFF]">
+          <div className="grid grid-cols-1 divide-y divide-[#E4E4DF] lg:grid-cols-12 lg:divide-x lg:divide-y-0">
+            {/* Left: Inputs (5 cols) */}
+            <div className="space-y-5 bg-[#FFFFFF] p-6 sm:p-7 lg:col-span-5">
+              {/* Presets */}
+              <div>
+                <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+                  Team profile
                 </div>
-                <span className="mt-1 font-mono text-xs text-[#94A3B8]">
-                  {preset.subtitle}
-                </span>
-                <span className="mt-2 font-mono text-xs text-[#CBD5E1]">
-                  {formatUsd(preview.githubMonthly)} →{' '}
-                  <strong className="text-[#10B981]">
-                    {formatUsd(preview.openCiMonthly)}/mo
-                  </strong>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Calculator Grid */}
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Controls */}
-          <div className="space-y-6 rounded-2xl border border-[#1E2636] bg-[#111520] p-6 lg:col-span-5">
-            {/* Monthly minutes slider */}
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="minutes-slider"
-                  className="text-sm font-semibold text-[#F8FAFC]"
-                >
-                  Monthly Runner Minutes
-                </label>
-                <span className="rounded-lg border border-[#1E2636] bg-[#090B10] px-2.5 py-1 font-mono text-sm font-bold text-[#F97316]">
-                  {monthlyMinutes.toLocaleString()} min
-                </span>
-              </div>
-              <input
-                id="minutes-slider"
-                type="range"
-                min={10_000}
-                max={1_000_000}
-                step={10_000}
-                value={monthlyMinutes}
-                onChange={(e) => {
-                  setActivePreset('custom');
-                  setMonthlyMinutes(Number(e.target.value));
-                }}
-                className="forge-slider mt-3 w-full"
-              />
-              <div className="mt-1.5 flex justify-between font-mono text-[11px] text-[#64748B]">
-                <span>10k min</span>
-                <span>200k min</span>
-                <span>500k min</span>
-                <span>1M min</span>
-              </div>
-            </div>
-
-            {/* Runner Size */}
-            <div>
-              <div className="text-sm font-semibold text-[#F8FAFC]">
-                Runner Size
-              </div>
-              <div className="mt-2.5 grid grid-cols-3 gap-2">
-                {VCPU_OPTIONS.map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => {
-                      setActivePreset('custom');
-                      setVcpu(size);
-                    }}
-                    className={`rounded-xl border px-3 py-2.5 font-mono text-xs font-semibold transition cursor-pointer ${
-                      vcpu === size
-                        ? 'border-[#F97316] bg-[#F97316]/15 text-[#F8FAFC]'
-                        : 'border-[#1E2636] bg-[#090B10] text-[#94A3B8] hover:border-[#2A354B] hover:text-[#F8FAFC]'
-                    }`}
-                  >
-                    <div>{size} vCPU</div>
-                    <div className="mt-0.5 text-[10px] font-normal text-[#64748B]">
-                      {CLOUD_PROFILES[cloudProfile].instances[size].memoryGiB} GiB RAM
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Cloud & Architecture */}
-            <div>
-              <div className="text-sm font-semibold text-[#F8FAFC]">
-                Your Cloud &amp; Architecture
-              </div>
-              <div className="mt-2.5 space-y-2">
-                {CLOUD_OPTIONS.map((profileId) => {
-                  const prof = CLOUD_PROFILES[profileId];
-                  const inst = prof.instances[vcpu];
-                  const selected = cloudProfile === profileId;
-                  return (
-                    <button
-                      key={profileId}
-                      type="button"
-                      onClick={() => {
-                        setActivePreset('custom');
-                        setCloudProfile(profileId);
-                      }}
-                      className={`flex w-full items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition cursor-pointer ${
-                        selected
-                          ? 'border-[#F97316] bg-[#F97316]/12 text-[#F8FAFC]'
-                          : 'border-[#1E2636] bg-[#090B10] text-[#94A3B8] hover:border-[#2A354B] hover:text-[#F8FAFC]'
-                      }`}
-                    >
-                      <div>
-                        <div className="text-xs font-semibold">{prof.label}</div>
-                        <div className="font-mono text-[11px] text-[#64748B]">
-                          {inst.name} · {vcpu} vCPU / {inst.memoryGiB} GiB
+                <div className="mt-2 grid grid-cols-3 gap-1 rounded bg-[#ECECE7] p-1">
+                  {CALCULATOR_PRESETS.map((preset) => {
+                    const meta = PRESET_LABELS[preset.id];
+                    const selected = activePresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => applyPreset(preset.id)}
+                        className={`rounded-[3px] px-2.5 py-1.5 text-left transition-all duration-150 active:scale-[0.98] cursor-pointer ${
+                          selected
+                            ? 'bg-[#FFFFFF] text-[#111111] shadow-[0_1px_1px_rgba(17,17,17,0.06)]'
+                            : 'text-[#555550] hover:text-[#111111]'
+                        }`}
+                      >
+                        <div className="text-[12.5px] font-medium leading-tight">
+                          {meta?.name ?? preset.name}
                         </div>
+                        <div className="mt-0.5 text-[11px] text-[#6E6E67]">
+                          {meta?.meta}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Monthly minutes slider */}
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <label
+                    htmlFor="monthly-minutes-slider"
+                    className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]"
+                  >
+                    Monthly runner minutes
+                  </label>
+                  <span className="font-mono text-[13px] font-medium text-[#111111] tabular-nums">
+                    {monthlyMinutes.toLocaleString('en-US')} min
+                  </span>
+                </div>
+                <input
+                  id="monthly-minutes-slider"
+                  type="range"
+                  min={10_000}
+                  max={1_000_000}
+                  step={10_000}
+                  value={monthlyMinutes}
+                  onChange={(e) => {
+                    setActivePresetId(null);
+                    setMonthlyMinutes(Number(e.target.value));
+                  }}
+                  className="ledger-slider mt-2.5 w-full"
+                />
+                <div className="mt-1 flex justify-between font-mono text-[11px] text-[#6E6E67] tabular-nums">
+                  <span>10k</span>
+                  <span>250k</span>
+                  <span>500k</span>
+                  <span>1M</span>
+                </div>
+              </div>
+
+              {/* vCPU segmented picker */}
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+                    Runner size
+                  </span>
+                  <span className="font-mono text-[11.5px] text-[#555550] tabular-nums">
+                    {costs.instanceName} · {costs.memoryGiB} GiB
+                  </span>
+                </div>
+                <div className="mt-2 grid grid-cols-3 gap-1 rounded bg-[#ECECE7] p-1">
+                  {VCPU_OPTIONS.map((size) => {
+                    const selected = vcpu === size;
+                    return (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          setActivePresetId(null);
+                          setVcpu(size);
+                        }}
+                        className={`rounded-[3px] py-1.5 font-mono text-[12px] transition-all duration-150 active:scale-[0.98] cursor-pointer tabular-nums ${
+                          selected
+                            ? 'bg-[#FFFFFF] font-medium text-[#111111] shadow-[0_1px_1px_rgba(17,17,17,0.06)]'
+                            : 'text-[#555550] hover:text-[#111111]'
+                        }`}
+                      >
+                        {size} vCPU
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Cloud profile selector */}
+              <div>
+                <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+                  Cloud &amp; architecture
+                </div>
+                <div className="mt-2 space-y-1.5">
+                  {CLOUD_OPTIONS.map((opt) => {
+                    const selected = cloudProfile === opt.id;
+                    const inst = CLOUD_PROFILES[opt.id].instances[vcpu];
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setActivePresetId(null);
+                          setCloudProfile(opt.id);
+                        }}
+                        className={`flex w-full items-center justify-between rounded border px-3 py-1.5 text-left transition-all duration-150 active:scale-[0.99] cursor-pointer ${
+                          selected
+                            ? 'border-[#111111] bg-[#FAFAF8] text-[#111111]'
+                            : 'border-[#E4E4DF] bg-[#FFFFFF] text-[#555550] hover:border-[#D2D2CA] hover:text-[#111111]'
+                        }`}
+                      >
+                        <span className="text-[12.5px] font-medium">{opt.label}</span>
+                        <span className="font-mono text-[11.5px] text-[#6E6E67] tabular-nums">
+                          ${inst.spotHourlyUsd.toFixed(3)}/hr
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Optional speedup slider */}
+              <div className="border-t border-[#E4E4DF] pt-4">
+                <div className="flex items-baseline justify-between">
+                  <label
+                    htmlFor="speedup-slider"
+                    className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]"
+                  >
+                    NVMe + cache speedup
+                  </label>
+                  <span className="font-mono text-[12px] text-[#111111] tabular-nums">
+                    {speedupPercent === 0 ? '0% (baseline)' : `−${speedupPercent}% runtime`}
+                  </span>
+                </div>
+                <input
+                  id="speedup-slider"
+                  type="range"
+                  min={0}
+                  max={50}
+                  step={5}
+                  value={speedupPercent}
+                  onChange={(e) => {
+                    setActivePresetId(null);
+                    setSpeedupPercent(Number(e.target.value));
+                  }}
+                  className="ledger-slider mt-2.5 w-full"
+                />
+              </div>
+            </div>
+
+            {/* Right: Architectural Cost Ledger (7 cols) */}
+            <div className="flex flex-col justify-between gap-6 p-6 sm:p-7 lg:col-span-7">
+              <div>
+                <div className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[#6E6E67]">
+                  <span>ANNUAL SAVINGS LEDGER</span>
+                  <span className="tabular-nums">
+                    {activeProfile.provider} · {activeProfile.arch.toUpperCase()} · {formatMinutes(costs.effectiveOpenCiMinutes)} MIN/MO
+                  </span>
+                </div>
+
+                {/* Primary savings figure */}
+                <div className="mt-4 flex flex-wrap items-baseline gap-x-3.5 gap-y-1">
+                  <span className="font-mono text-[44px] font-medium leading-none tracking-[-0.04em] text-[#111111] tabular-nums sm:text-[54px]">
+                    {formatUsd(costs.savingsVsGithubAnnual)}
+                  </span>
+                  <span className="font-mono text-[14px] text-[#6E6E67]">
+                    / yr saved vs GitHub
+                  </span>
+                </div>
+
+                <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[12px] tabular-nums">
+                  <span className="font-medium text-[#15803D]">
+                    {costs.savingsVsGithubPct}% lower than GitHub Actions
+                  </span>
+                  <span className="text-[#D2D2CA]">·</span>
+                  <span className="text-[#555550]">
+                    {costs.savingsVsSaasPct}% lower than managed SaaS ({formatUsd(costs.savingsVsSaasAnnual)}/yr)
+                  </span>
+                </div>
+
+                {/* Annualized comparison ledger with aligned Δ column */}
+                <div className="mt-7">
+                  <div className="mb-3 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-[#E4E4DF] pb-2 font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+                    <span>Provider</span>
+                    <span className="w-24 text-right">Annual</span>
+                    <span className="w-28 text-right">Δ vs GitHub</span>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div className="grid grid-cols-[1fr_auto_auto] items-baseline gap-4 text-[13px]">
+                        <span className="text-[#555550]">
+                          GitHub Actions{' '}
+                          <span className="font-mono text-[11.5px] text-[#6E6E67] tabular-nums">
+                            (${costs.githubRatePerMin.toFixed(3)}/min)
+                          </span>
+                        </span>
+                        <span className="w-24 text-right font-mono font-medium text-[#111111] tabular-nums">
+                          {formatUsd(githubAnnual)}
+                        </span>
+                        <span className="w-28 text-right font-mono text-[12px] text-[#6E6E67] tabular-nums">
+                          Baseline
+                        </span>
                       </div>
-                      <span className="font-mono text-xs font-semibold text-[#10B981]">
-                        ~${inst.spotHourlyUsd.toFixed(3)}/hr
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-[2px] bg-[#ECECE7]">
+                        <div
+                          className="h-full rounded-[2px] bg-[#C4C4BC] transition-all duration-200"
+                          style={{ width: `${githubWidth}%` }}
+                        />
+                      </div>
+                    </div>
 
-            {/* Optional Speedup Multiplier */}
-            <div className="rounded-xl border border-[#1E2636] bg-[#090B10] p-4">
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="speedup-slider"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F8FAFC]"
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-[#F97316]" />
-                  NVMe + Cache Speedup Factor
-                </label>
-                <span className="font-mono text-xs font-bold text-[#10B981]">
-                  {speedupPercent === 0 ? 'Off (1.0× raw)' : `${speedupPercent}% faster`}
-                </span>
-              </div>
-              <input
-                id="speedup-slider"
-                type="range"
-                min={0}
-                max={45}
-                step={5}
-                value={speedupPercent}
-                onChange={(e) => {
-                  setActivePreset('custom');
-                  setSpeedupPercent(Number(e.target.value));
-                }}
-                className="forge-slider mt-3 w-full"
-              />
-              <p className="mt-2 text-[11px] leading-relaxed text-[#64748B]">
-                Optional: faster NVMe + local Actions v2 cache runners finish jobs
-                20–45% sooner, billing even fewer minutes. Set to{' '}
-                <span className="font-mono text-[#94A3B8]">0%</span> for pure
-                apple-to-apple per-minute pricing.
-              </p>
-            </div>
-          </div>
-
-          {/* Results & Visual Comparison */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#1E2636] bg-[#111520] p-6 lg:col-span-7">
-            <div>
-              {/* Big Savings Banner */}
-              <div className="grid grid-cols-1 gap-4 rounded-xl border border-[#10B981]/30 bg-[#10B981]/[0.07] p-5 sm:grid-cols-2">
-                <div>
-                  <div className="flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-[#10B981]">
-                    <TrendingDown className="h-3.5 w-3.5" />
-                    Annual Savings vs GitHub Actions
-                  </div>
-                  <div className="mt-1.5 font-display text-4xl font-extrabold text-[#F8FAFC]">
-                    {formatUsd(result.savingsVsGithubAnnual)}
-                    <span className="text-lg font-medium text-[#94A3B8]">/yr</span>
-                  </div>
-                  <div className="mt-1 font-mono text-xs text-[#10B981]">
-                    {formatUsd(result.savingsVsGithubMonthly)}/mo saved ·{' '}
-                    <strong>{result.savingsVsGithubPct}% cheaper</strong>
-                  </div>
-                </div>
-
-                <div className="border-t border-[#10B981]/20 pt-4 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-5">
-                  <div className="font-mono text-xs font-semibold uppercase tracking-wider text-[#94A3B8]">
-                    Savings vs Managed Runner SaaS
-                  </div>
-                  <div className="mt-1.5 font-display text-3xl font-extrabold text-[#F8FAFC]">
-                    {formatUsd(result.savingsVsSaasAnnual)}
-                    <span className="text-base font-medium text-[#94A3B8]">/yr</span>
-                  </div>
-                  <div className="mt-1 font-mono text-xs text-[#CBD5E1]">
-                    {formatUsd(result.savingsVsSaasMonthly)}/mo saved ·{' '}
-                    <span className="text-[#10B981] font-semibold">
-                      {result.savingsVsSaasPct}% cheaper
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Animated Horizontal Bar Comparison */}
-              <div className="mt-7 space-y-5">
-                {/* GitHub Actions */}
-                <div>
-                  <div className="flex items-baseline justify-between text-sm">
                     <div>
-                      <span className="font-semibold text-[#F8FAFC]">
-                        GitHub Actions
-                      </span>
-                      <span className="ml-2 font-mono text-xs text-[#64748B]">
-                        ${result.githubRatePerMin.toFixed(3)}/min ·{' '}
-                        {vcpu}-core {CLOUD_PROFILES[cloudProfile].arch}
-                      </span>
+                      <div className="grid grid-cols-[1fr_auto_auto] items-baseline gap-4 text-[13px]">
+                        <span className="text-[#555550]">
+                          Managed runner SaaS{' '}
+                          <span className="font-mono text-[11.5px] text-[#6E6E67] tabular-nums">
+                            (${costs.managedSaasRatePerMin.toFixed(3)}/min)
+                          </span>
+                        </span>
+                        <span className="w-24 text-right font-mono font-medium text-[#111111] tabular-nums">
+                          {formatUsd(saasAnnual)}
+                        </span>
+                        <span className="w-28 text-right font-mono text-[12px] text-[#555550] tabular-nums">
+                          −{formatUsd(saasDeltaAnnual)}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-[2px] bg-[#ECECE7]">
+                        <div
+                          className="h-full rounded-[2px] bg-[#C4C4BC] transition-all duration-200"
+                          style={{ width: `${saasWidth}%` }}
+                        />
+                      </div>
                     </div>
-                    <span className="font-mono text-base font-bold text-[#CBD5E1]">
-                      {formatUsd(result.githubMonthly)}/mo
-                    </span>
-                  </div>
-                  <div className="mt-2 h-3.5 w-full overflow-hidden rounded-full bg-[#090B10]">
-                    <div
-                      className="h-full rounded-full bg-[#334155] transition-all duration-500 ease-out"
-                      style={{
-                        width: `${Math.max(4, (result.githubMonthly / maxCost) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                </div>
 
-                {/* Managed 3rd-party Runner SaaS */}
-                <div>
-                  <div className="flex items-baseline justify-between text-sm">
                     <div>
-                      <span className="font-semibold text-[#F8FAFC]">
-                        Managed Runner SaaS
-                      </span>
-                      <span className="ml-2 font-mono text-xs text-[#64748B]">
-                        e.g. Blacksmith · ${result.managedSaasRatePerMin.toFixed(3)}/min
-                      </span>
+                      <div className="grid grid-cols-[1fr_auto_auto] items-baseline gap-4 text-[13px]">
+                        <span className="font-medium text-[#111111]">
+                          open-ci{' '}
+                          <span className="font-mono text-[11.5px] font-normal text-[#6E6E67] tabular-nums">
+                            (${costs.openCiAllInRatePerMin.toFixed(4)}/min incl. disk + $15/mo VM)
+                          </span>
+                        </span>
+                        <span className="w-24 text-right font-mono font-medium text-[#111111] tabular-nums">
+                          {formatUsd(openCiAnnual)}
+                        </span>
+                        <span className="w-28 text-right font-mono text-[12px] font-medium text-[#15803D] tabular-nums">
+                          −{formatUsd(costs.savingsVsGithubAnnual)}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-[2px] bg-[#ECECE7]">
+                        <div
+                          className="h-full rounded-[2px] bg-[#111111] transition-all duration-200"
+                          style={{ width: `${openCiWidth}%` }}
+                        />
+                      </div>
                     </div>
-                    <span className="font-mono text-base font-bold text-[#FB923C]">
-                      {formatUsd(result.managedSaasMonthly)}/mo
-                    </span>
-                  </div>
-                  <div className="mt-2 h-3.5 w-full overflow-hidden rounded-full bg-[#090B10]">
-                    <div
-                      className="h-full rounded-full bg-[#F97316]/70 transition-all duration-500 ease-out"
-                      style={{
-                        width: `${Math.max(4, (result.managedSaasMonthly / maxCost) * 100)}%`,
-                      }}
-                    />
                   </div>
                 </div>
+              </div>
 
-                {/* open-ci */}
-                <div>
-                  <div className="flex items-baseline justify-between text-sm">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-[#10B981]">
-                        open-ci ({CLOUD_PROFILES[cloudProfile].shortLabel})
-                      </span>
-                      <span className="rounded border border-[#10B981]/30 bg-[#10B981]/10 px-1.5 py-0.5 font-mono text-[11px] text-[#10B981]">
-                        {result.instanceName} · ${result.openCiAllInRatePerMin.toFixed(4)}/min all-in
-                      </span>
+              {/* Tight monthly line-item breakdown */}
+              <div className="border-t border-[#E4E4DF] pt-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 tabular-nums">
+                  <div>
+                    <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#6E6E67]">
+                      Monthly open-ci bill
                     </div>
-                    <span className="font-mono text-lg font-extrabold text-[#10B981]">
-                      ~{formatUsd(result.openCiMonthly)}/mo
-                    </span>
+                    <div className="mt-1 font-mono text-[14px] font-medium text-[#111111]">
+                      {formatUsd(costs.openCiMonthly)}/mo
+                    </div>
+                    <div className="mt-0.5 text-[11.5px] text-[#6E6E67]">
+                      vs {formatUsd(costs.githubMonthly)}/mo on GitHub
+                    </div>
                   </div>
-                  <div className="mt-2 h-3.5 w-full overflow-hidden rounded-full bg-[#090B10]">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#10B981] to-[#34D399] shadow-[0_0_16px_rgba(16,185,129,0.45)] transition-all duration-500 ease-out"
-                      style={{
-                        width: `${Math.max(3.5, (result.openCiMonthly / maxCost) * 100)}%`,
-                      }}
-                    />
+                  <div>
+                    <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#6E6E67]">
+                      Spot compute + disks
+                    </div>
+                    <div className="mt-1 font-mono text-[14px] font-medium text-[#111111]">
+                      {formatUsd(costs.openCiComputeMonthly)}/mo
+                    </div>
+                    <div className="mt-0.5 text-[11.5px] text-[#6E6E67]">
+                      + ~{formatUsd(costs.controlPlaneMonthly)}/mo controller VM
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#6E6E67]">
+                      Markup &amp; credits
+                    </div>
+                    <div className="mt-1 font-mono text-[14px] font-medium text-[#15803D]">
+                      0% markup
+                    </div>
+                    <div className="mt-0.5 text-[11.5px] text-[#6E6E67]">
+                      Burns AWS/GCP credits
+                    </div>
                   </div>
                 </div>
+                <p className="mt-4 border-t border-[#E4E4DF] pt-3 text-[11.5px] text-[#6E6E67]">
+                  Includes raw Spot compute, ephemeral boot disks, and one ~$15/mo controller VM. Zero per-seat fees.
+                </p>
               </div>
-            </div>
-
-            {/* Transparent Math Breakdown */}
-            <div className="mt-8 rounded-xl border border-[#1E2636] bg-[#090B10] p-4">
-              <div className="flex items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">
-                <Info className="h-3.5 w-3.5 text-[#F97316]" />
-                Transparent Cost Math (Zero Hidden SaaS Tax)
-              </div>
-              <div className="mt-2.5 grid grid-cols-1 gap-2 font-mono text-xs text-[#94A3B8] sm:grid-cols-2">
-                <div>
-                  Spot compute + ephemeral disk:{' '}
-                  <span className="text-[#F8FAFC]">
-                    {formatMinutes(result.effectiveOpenCiMinutes)} min × $
-                    {result.openCiAllInRatePerMin.toFixed(4)} ={' '}
-                    {formatUsd(result.openCiComputeMonthly)}/mo
-                  </span>
-                </div>
-                <div>
-                  Control plane (e2-small / t4g.small):{' '}
-                  <span className="text-[#F8FAFC]">
-                    +${result.controlPlaneMonthly}/mo flat
-                  </span>
-                </div>
-              </div>
-              <p className="mt-2.5 text-xs text-[#64748B]">
-                Billed directly by AWS or GCP inside your own account — eligible
-                for startup credits, EDP discounts, and Savings Plans.
-              </p>
             </div>
           </div>
         </div>

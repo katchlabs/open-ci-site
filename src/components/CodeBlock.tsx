@@ -1,10 +1,12 @@
 import { useState, type ReactNode } from 'react';
-import { Check, Copy, Terminal } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 
 interface CodeBlockProps {
   code: string;
   language?: string;
   filename?: string;
+  showLineNumbers?: boolean;
+  diffHighlights?: Record<number, 'add' | 'remove'>;
   compact?: boolean;
   className?: string;
 }
@@ -12,29 +14,23 @@ interface CodeBlockProps {
 function highlightLine(line: string, lang: string): ReactNode {
   const trimmed = line.trimStart();
 
-  // Comment lines
-  if (
-    trimmed.startsWith('#') ||
-    (lang === 'sql' && trimmed.startsWith('--'))
-  ) {
-    return <span className="text-[#64748B] italic">{line}</span>;
+  if (trimmed.startsWith('#') || (lang === 'sql' && trimmed.startsWith('--'))) {
+    return <span className="text-[#8A8A82]">{line}</span>;
   }
 
-  // TOML / INI section headers
   if ((lang === 'toml' || lang === 'ini') && /^\[+[^\]]+\]+/.test(trimmed)) {
-    return <span className="text-[#F97316] font-semibold">{line}</span>;
+    return <span className="text-[#E4BE80]">{line}</span>;
   }
 
-  // YAML or TOML key: value / key = value
   if (lang === 'yaml' || lang === 'yml') {
     const match = line.match(/^(\s*-?\s*)([a-zA-Z0-9_.-]+)(:)(\s*)(.*)$/);
     if (match) {
       const [, indent, key, colon, space, rest] = match;
       return (
         <>
-          <span className="text-[#94A3B8]">{indent}</span>
-          <span className="text-[#FB923C]">{key}</span>
-          <span className="text-[#64748B]">{colon}</span>
+          <span className="text-[#8A8A82]">{indent}</span>
+          <span className="text-[#F5F5F2]">{key}</span>
+          <span className="text-[#8A8A82]">{colon}</span>
           {space}
           {highlightValue(rest)}
         </>
@@ -49,15 +45,14 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#38BDF8]">{key}</span>
-          <span className="text-[#64748B]">{eq}</span>
+          <span className="text-[#F5F5F2]">{key}</span>
+          <span className="text-[#8A8A82]">{eq}</span>
           {highlightValue(rest)}
         </>
       );
     }
   }
 
-  // JSON key-value lines
   if (lang === 'json') {
     const match = line.match(/^(\s*)("[^"]+")(:\s*)(.*)$/);
     if (match) {
@@ -65,67 +60,69 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#38BDF8]">{key}</span>
-          <span className="text-[#64748B]">{colon}</span>
+          <span className="text-[#F5F5F2]">{key}</span>
+          <span className="text-[#8A8A82]">{colon}</span>
           {highlightValue(rest)}
         </>
       );
     }
   }
 
-  // SQL keywords
   if (lang === 'sql') {
     const parts = line.split(/(\b(?:PRAGMA|SELECT|UPDATE|WHERE|FROM|AND|ON|FULL|WAL)\b)/g);
     return parts.map((part, i) =>
       /^(?:PRAGMA|SELECT|UPDATE|WHERE|FROM|AND|ON|FULL|WAL)$/.test(part) ? (
-        <span key={i} className="text-[#F97316] font-medium">
+        <span key={i} className="text-[#E4BE80]">
           {part}
         </span>
       ) : (
-        <span key={i} className="text-[#E2E8F0]">
+        <span key={i} className="text-[#E2E2DC]">
           {part}
         </span>
       )
     );
   }
 
-  // Shell commands
   if (lang === 'bash' || lang === 'sh' || lang === 'shell') {
     const parts = line.split(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g);
     return parts.map((part, i) => {
-      if ((part.startsWith('"') && part.endsWith('"')) || (part.startsWith("'") && part.endsWith("'"))) {
+      if (
+        (part.startsWith('"') && part.endsWith('"')) ||
+        (part.startsWith("'") && part.endsWith("'"))
+      ) {
         return (
-          <span key={i} className="text-[#10B981]">
+          <span key={i} className="text-[#93C5A3]">
             {part}
           </span>
         );
       }
-      // Highlight flags like --config or -var
       const subParts = part.split(/(\s--?[a-zA-Z0-9_-]+)/g);
       return (
         <span key={i}>
           {subParts.map((sp, j) => {
             if (/^\s--?[a-zA-Z0-9_-]+$/.test(sp)) {
               return (
-                <span key={j} className="text-[#FB923C]">
+                <span key={j} className="text-[#C8C8BE]">
                   {sp}
                 </span>
               );
             }
             if (i === 0 && j === 0) {
-              const cmdMatch = sp.match(/^(\s*)(docker|curl|open-ci|cargo|terraform|packer|sudo|export|sha256sum|tar|mkdir|printf|gh|node|bash)(\b.*)$/);
+              const cmdMatch = sp.match(
+                /^(\s*)(docker|curl|open-ci|cargo|terraform|packer|sudo|export|sha256sum|tar|mkdir|printf|gh|node|bash)(\b.*)$/
+              );
               if (cmdMatch) {
                 return (
                   <span key={j}>
                     {cmdMatch[1]}
-                    <span className="text-[#38BDF8] font-medium">{cmdMatch[2]}</span>
-                    <span className="text-[#E2E8F0]">{cmdMatch[3]}</span>
+                    <span className="text-[#F5F5F2]">{cmdMatch[2]}</span>
+                    <span className="text-[#D4D4CC]">{cmdMatch[3]}</span>
                   </span>
                 );
               }
             }
             return (
-              <span key={j} className="text-[#E2E8F0]">
+              <span key={j} className="text-[#D4D4CC]">
                 {sp}
               </span>
             );
@@ -135,12 +132,11 @@ function highlightLine(line: string, lang: string): ReactNode {
     });
   }
 
-  return <span className="text-[#E2E8F0]">{line}</span>;
+  return <span className="text-[#E2E2DC]">{line}</span>;
 }
 
 function highlightValue(val: string): ReactNode {
   if (!val) return null;
-  // Split inline trailing comment
   const commentIdx = val.search(/\s+#\s/);
   const main = commentIdx >= 0 ? val.slice(0, commentIdx) : val;
   const comment = commentIdx >= 0 ? val.slice(commentIdx) : '';
@@ -149,21 +145,19 @@ function highlightValue(val: string): ReactNode {
   const mTrim = main.trim();
 
   if (/^(true|false|null),?$/.test(mTrim)) {
-    rendered = <span className="text-[#F472B6]">{main}</span>;
+    rendered = <span className="text-[#E4BE80]">{main}</span>;
   } else if (/^-?\d+(\.\d+)?,?$/.test(mTrim)) {
-    rendered = <span className="text-[#A78BFA]">{main}</span>;
+    rendered = <span className="text-[#E4BE80]">{main}</span>;
   } else if (main.includes('${{')) {
-    rendered = <span className="text-[#FBBF24]">{main}</span>;
-  } else if (/^["'].*["'],?$/.test(mTrim)) {
-    rendered = <span className="text-[#10B981]">{main}</span>;
+    rendered = <span className="text-[#E4BE80]">{main}</span>;
   } else {
-    rendered = <span className="text-[#10B981]">{main}</span>;
+    rendered = <span className="text-[#93C5A3]">{main}</span>;
   }
 
   return (
     <>
       {rendered}
-      {comment && <span className="text-[#64748B] italic">{comment}</span>}
+      {comment && <span className="text-[#8A8A82]">{comment}</span>}
     </>
   );
 }
@@ -172,6 +166,8 @@ export function CodeBlock({
   code,
   language = 'bash',
   filename,
+  showLineNumbers = false,
+  diffHighlights,
   compact = false,
   className = '',
 }: CodeBlockProps) {
@@ -181,51 +177,48 @@ export function CodeBlock({
   const lines = normalized.split('\n');
 
   const handleCopy = async () => {
+    const cleanCopy = lines
+      .filter((_, idx) => diffHighlights?.[idx + 1] !== 'remove')
+      .join('\n');
     try {
-      await navigator.clipboard.writeText(normalized);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      await navigator.clipboard.writeText(cleanCopy);
     } catch {
-      // Fallback for non-HTTPS clipboard contexts
       const textarea = document.createElement('textarea');
-      textarea.value = normalized;
+      textarea.value = cleanCopy;
       textarea.style.position = 'fixed';
       textarea.style.opacity = '0';
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
   };
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border border-[#1E2636] bg-[#0B0E16] ${className}`}
+      className={`overflow-hidden rounded-lg border border-[#262624] bg-[#141413] text-[#F5F5F2] ${className}`}
     >
       {!compact && (
-        <div className="flex items-center justify-between border-b border-[#1E2636] bg-[#111520]/80 px-4 py-2">
-          <div className="flex items-center gap-2 text-xs text-[#94A3B8]">
-            <Terminal className="h-3.5 w-3.5 text-[#F97316]" />
-            <span className="font-mono font-medium text-[#CBD5E1]">
-              {filename ?? lang}
-            </span>
-          </div>
+        <div className="flex items-center justify-between border-b border-[#262624] px-4 py-2.5">
+          <span className="font-mono text-[11px] text-[#9A9A90]">
+            {filename ?? lang}
+          </span>
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded-md border border-[#1E2636] bg-[#090B10] px-2.5 py-1 text-[11px] font-medium text-[#94A3B8] transition hover:border-[#2A354B] hover:text-[#F8FAFC] cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-0.5 font-mono text-[11px] text-[#C8C8BE] transition-colors duration-150 hover:border-[#444440] hover:text-[#F5F5F2] active:scale-[0.98] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-[#10B981]" />
-                <span className="text-[#10B981]">Copied</span>
+                <Check className="h-3 w-3 text-[#93C5A3]" />
+                <span className="text-[#93C5A3]">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="h-3.5 w-3.5" />
+                <Copy className="h-3 w-3" />
                 <span>Copy</span>
               </>
             )}
@@ -238,28 +231,60 @@ export function CodeBlock({
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-md border border-[#1E2636] bg-[#111520]/90 px-2 py-1 text-[11px] font-medium text-[#94A3B8] backdrop-blur transition hover:border-[#2A354B] hover:text-[#F8FAFC] cursor-pointer"
+            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-1 font-mono text-[11px] text-[#C8C8BE] transition-colors hover:text-[#F5F5F2] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
-              <Check className="h-3.5 w-3.5 text-[#10B981]" />
+              <Check className="h-3 w-3 text-[#93C5A3]" />
             ) : (
-              <Copy className="h-3.5 w-3.5" />
+              <Copy className="h-3 w-3" />
             )}
           </button>
         )}
 
         <pre
-          className={`font-mono text-[13px] leading-relaxed ${
-            compact ? 'px-4 py-3 pr-12' : 'p-4'
+          className={`font-mono text-[12.5px] leading-[1.65] ${
+            compact ? 'px-4 py-3 pr-12' : 'py-3.5'
           }`}
         >
           <code>
-            {lines.map((line, idx) => (
-              <div key={idx} className="min-h-[1.35rem]">
-                {highlightLine(line, lang)}
-              </div>
-            ))}
+            {lines.map((line, idx) => {
+              const lineNo = idx + 1;
+              const diff = diffHighlights?.[lineNo];
+              const rowClass =
+                diff === 'add'
+                  ? 'bg-[#15803D]/18 border-l-2 border-[#4ADE80]'
+                  : diff === 'remove'
+                    ? 'bg-[#DC2626]/14 border-l-2 border-[#F87171] opacity-65'
+                    : 'border-l-2 border-transparent';
+
+              return (
+                <div
+                  key={idx}
+                  className={`flex min-h-[1.35rem] ${compact ? '' : 'px-4'} ${rowClass}`}
+                >
+                  {showLineNumbers && (
+                    <span className="mr-3 inline-block w-5 shrink-0 select-none text-right text-[#62625B] tabular-nums">
+                      {lineNo}
+                    </span>
+                  )}
+                  {diffHighlights && (
+                    <span
+                      className={`mr-2 inline-block w-3 shrink-0 select-none text-center ${
+                        diff === 'add'
+                          ? 'text-[#4ADE80]'
+                          : diff === 'remove'
+                            ? 'text-[#F87171]'
+                            : 'text-transparent'
+                      }`}
+                    >
+                      {diff === 'add' ? '+' : diff === 'remove' ? '−' : ' '}
+                    </span>
+                  )}
+                  <span className="flex-1">{highlightLine(line, lang)}</span>
+                </div>
+              );
+            })}
           </code>
         </pre>
       </div>

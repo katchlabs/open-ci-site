@@ -57,40 +57,40 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/75 px-4 pt-20 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-[#111111]/30 px-4 pt-24 backdrop-blur-[2px]"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Search documentation"
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-[#2A354B] bg-[#111520] shadow-2xl"
+        className="w-full max-w-xl overflow-hidden rounded-lg border border-[#D2D2CA] bg-[#FFFFFF]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 border-b border-[#1E2636] px-4 py-3.5">
-          <Search className="h-4 w-4 text-[#F97316]" />
+        <div className="flex items-center gap-3 border-b border-[#E4E4DF] px-4 py-3.5">
+          <Search className="h-4 w-4 text-[#6E6E67]" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search docs (e.g. OIDC, NVMe, cache, AssumeRole, janitor, open-ci.toml)..."
-            className="w-full bg-transparent text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none"
+            placeholder="Search docs (OIDC, NVMe, cache, AssumeRole, open-ci.toml)..."
+            className="w-full bg-transparent text-sm text-[#111111] placeholder-[#6E6E67] focus:outline-none"
           />
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-[#1E2636] bg-[#090B10] p-1 text-[#94A3B8] hover:text-[#F8FAFC] cursor-pointer"
+            className="rounded border border-[#E4E4DF] bg-[#F5F5F2] p-1 text-[#555550] transition-colors hover:text-[#111111] cursor-pointer"
             aria-label="Close search"
           >
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
 
-        <div className="max-h-[60vh] overflow-y-auto p-2">
+        <div className="max-h-[58vh] overflow-y-auto p-1.5">
           {results.length === 0 ? (
-            <div className="px-4 py-10 text-center text-sm text-[#64748B]">
-              No documentation matches for <span className="font-mono text-[#CBD5E1]">"{query}"</span>.
+            <div className="px-4 py-10 text-center text-sm text-[#6E6E67]">
+              No matches for <span className="font-mono text-[#111111]">"{query}"</span>.
             </div>
           ) : (
             results.map((item, idx) => {
@@ -107,36 +107,36 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                     navigate(target);
                     onClose();
                   }}
-                  className={`flex w-full items-start justify-between gap-3 rounded-xl px-3.5 py-3 text-left transition cursor-pointer ${
-                    active ? 'bg-[#161C2B]' : 'hover:bg-[#161C2B]/60'
+                  className={`flex w-full items-start justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-colors cursor-pointer ${
+                    active ? 'bg-[#F5F5F2]' : 'hover:bg-[#F5F5F2]/60'
                   }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       {item.heading ? (
-                        <Hash className="h-3.5 w-3.5 shrink-0 text-[#F97316]" />
+                        <Hash className="h-3.5 w-3.5 shrink-0 text-[#6E6E67]" />
                       ) : (
-                        <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#F97316]" />
+                        <BookOpen className="h-3.5 w-3.5 shrink-0 text-[#6E6E67]" />
                       )}
-                      <span className="truncate text-sm font-semibold text-[#F8FAFC]">
+                      <span className="truncate text-[13px] font-medium text-[#111111]">
                         {item.doc.title}
                       </span>
-                      <span className="hidden sm:inline rounded bg-[#090B10] px-1.5 py-0.5 font-mono text-[10px] text-[#64748B]">
+                      <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-[0.06em] text-[#6E6E67]">
                         {item.doc.section}
                       </span>
                     </div>
                     {item.heading && (
-                      <div className="mt-0.5 pl-5.5 font-mono text-xs text-[#FB923C]">
+                      <div className="mt-0.5 pl-5.5 font-mono text-[11px] text-[#555550]">
                         § {item.heading.text}
                       </div>
                     )}
-                    <p className="mt-1 line-clamp-2 pl-5.5 text-xs text-[#94A3B8]">
+                    <p className="mt-1 line-clamp-2 pl-5.5 text-xs text-[#555550]">
                       {item.snippet}
                     </p>
                   </div>
                   <ArrowRight
-                    className={`mt-1 h-4 w-4 shrink-0 transition ${
-                      active ? 'text-[#F97316]' : 'text-[#334155]'
+                    className={`mt-1 h-3.5 w-3.5 shrink-0 transition-colors ${
+                      active ? 'text-[#111111]' : 'text-[#D2D2CA]'
                     }`}
                   />
                 </button>
@@ -145,9 +145,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-[#1E2636] bg-[#0B0E16] px-4 py-2 font-mono text-[11px] text-[#64748B]">
+        <div className="flex items-center justify-between border-t border-[#E4E4DF] bg-[#F5F5F2] px-4 py-2 font-mono text-[11px] text-[#6E6E67]">
           <span>↑↓ navigate · ↵ open · esc close</span>
-          <span>{results.length} results</span>
+          <span className="tabular-nums">{results.length} results</span>
         </div>
       </div>
     </div>

@@ -1,91 +1,120 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen, Calculator, Github, Menu, Search, X } from 'lucide-react';
+import { ArrowUpRight, Grid2x2, Menu, Search, X } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface NavbarProps {
   onOpenSearch: () => void;
+  gridVisible: boolean;
+  onToggleGrid: () => void;
 }
 
-export function Navbar({ onOpenSearch }: NavbarProps) {
+export function Navbar({
+  onOpenSearch,
+  gridVisible,
+  onToggleGrid,
+}: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const isDocs = location.pathname.startsWith('/docs');
 
+  const navLinks = [
+    { label: 'savings', href: '/#savings', isRoute: false },
+    { label: 'benchmarks', href: '/#benchmarks', isRoute: false },
+    { label: 'workflow', href: '/#workflow', isRoute: false },
+    { label: 'docs', href: '/docs', isRoute: true },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[#1E2636]/90 bg-[#090B10]/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-7">
-          <Link to="/" className="flex items-center gap-2 focus:outline-none">
+    <header className="sticky top-0 z-50 h-[52px] border-b border-[#E4E4DF] bg-[#F5F5F2]/92 backdrop-blur-md">
+      <div className="mx-auto flex h-full max-w-[1160px] items-center justify-between px-5 sm:px-8">
+        <div className="flex items-center gap-8">
+          <Link
+            to="/"
+            className="transition-opacity duration-150 hover:opacity-75"
+            aria-label="open-ci home"
+          >
             <Logo />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1 text-sm">
-            <a
-              href="/#savings"
-              className="rounded-lg px-3 py-1.5 font-medium text-[#94A3B8] transition hover:bg-[#111520] hover:text-[#F8FAFC]"
-            >
-              Savings Calculator
-            </a>
-            <a
-              href="/#wiring"
-              className="rounded-lg px-3 py-1.5 font-medium text-[#94A3B8] transition hover:bg-[#111520] hover:text-[#F8FAFC]"
-            >
-              How It Works
-            </a>
-            <a
-              href="/#features"
-              className="rounded-lg px-3 py-1.5 font-medium text-[#94A3B8] transition hover:bg-[#111520] hover:text-[#F8FAFC]"
-            >
-              Architecture
-            </a>
-            <Link
-              to="/docs"
-              className={`rounded-lg px-3 py-1.5 font-medium transition ${
-                isDocs
-                  ? 'bg-[#111520] text-[#F97316]'
-                  : 'text-[#94A3B8] hover:bg-[#111520] hover:text-[#F8FAFC]'
-              }`}
-            >
-              Docs
-            </Link>
+          <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+            {navLinks.map((item) => {
+              const active = item.isRoute && isDocs;
+              return item.isRoute ? (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className={`text-[13px] transition-colors duration-150 ${
+                    active
+                      ? 'font-medium text-[#111111]'
+                      : 'text-[#555550] hover:text-[#111111]'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-[13px] text-[#555550] transition-colors duration-150 hover:text-[#111111]"
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </nav>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="hidden items-center gap-2 md:flex">
+          <button
+            type="button"
+            onClick={onToggleGrid}
+            title="Toggle 12-column blueprint grid (G)"
+            aria-pressed={gridVisible}
+            className={`inline-flex h-8 items-center gap-1.5 rounded px-2 text-[12px] transition-colors duration-150 active:scale-[0.98] cursor-pointer ${
+              gridVisible
+                ? 'bg-[#ECECE7] text-[#111111]'
+                : 'text-[#6E6E67] hover:bg-[#ECECE7]/70 hover:text-[#111111]'
+            }`}
+          >
+            <Grid2x2 className="h-3.5 w-3.5" />
+            <span className="font-mono text-[10px]">G</span>
+          </button>
+
           <button
             type="button"
             onClick={onOpenSearch}
-            className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-[#1E2636] bg-[#111520] px-3 py-1.5 text-xs text-[#94A3B8] transition hover:border-[#2A354B] hover:text-[#F8FAFC] cursor-pointer"
+            className="inline-flex h-8 items-center gap-2 rounded border border-[#E4E4DF] bg-[#FFFFFF] px-2.5 text-[12px] text-[#555550] transition-all duration-150 hover:border-[#D2D2CA] hover:text-[#111111] active:scale-[0.98] cursor-pointer"
+            aria-label="Search documentation"
           >
-            <Search className="h-3.5 w-3.5" />
-            <span>Search docs...</span>
-            <kbd className="ml-2 rounded border border-[#2A354B] bg-[#090B10] px-1.5 py-0.5 font-mono text-[10px] text-[#64748B]">
-              ⌘K
-            </kbd>
+            <Search className="h-3.5 w-3.5 text-[#6E6E67]" />
+            <kbd className="font-mono text-[10.5px] text-[#6E6E67]">⌘K</kbd>
           </button>
 
           <a
             href="https://github.com/katchlabs/open-ci"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#1E2636] bg-[#111520] px-3 py-1.5 text-xs font-medium text-[#F8FAFC] transition hover:border-[#2A354B] hover:bg-[#161C2B]"
+            className="inline-flex h-8 items-center gap-1 rounded bg-[#111111] px-3 text-[12px] font-medium text-[#FFFFFF] transition-all duration-150 hover:bg-[#262624] active:scale-[0.98]"
           >
-            <Github className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">GitHub</span>
+            <span>GitHub</span>
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
+        </div>
 
-          <Link
-            to="/docs/quickstart"
-            className="hidden sm:inline-flex items-center rounded-lg bg-[#F97316] px-3.5 py-1.5 text-xs font-semibold text-[#090B10] shadow-sm shadow-[#F97316]/20 transition hover:bg-[#FB923C]"
-          >
-            Deploy Now
-          </Link>
-
+        <div className="flex items-center gap-1.5 md:hidden">
           <button
             type="button"
-            onClick={() => setMobileOpen((v) => !v)}
-            className="inline-flex md:hidden items-center justify-center rounded-lg border border-[#1E2636] bg-[#111520] p-2 text-[#94A3B8] hover:text-[#F8FAFC] cursor-pointer"
+            onClick={onOpenSearch}
+            className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#E4E4DF] bg-[#FFFFFF] text-[#555550] cursor-pointer"
+            aria-label="Search documentation"
+          >
+            <Search className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#E4E4DF] bg-[#FFFFFF] text-[#111111] cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -94,42 +123,40 @@ export function Navbar({ onOpenSearch }: NavbarProps) {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-[#1E2636] bg-[#090B10] px-4 py-4 md:hidden">
-          <div className="flex flex-col gap-1.5 text-sm">
-            <button
-              type="button"
-              onClick={() => {
-                setMobileOpen(false);
-                onOpenSearch();
-              }}
-              className="flex items-center gap-2 rounded-lg border border-[#1E2636] bg-[#111520] px-3 py-2 text-left text-xs text-[#94A3B8] cursor-pointer"
-            >
-              <Search className="h-3.5 w-3.5" />
-              Search documentation...
-            </button>
-            <a
-              href="/#savings"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#CBD5E1] hover:bg-[#111520]"
-            >
-              <Calculator className="h-4 w-4 text-[#F97316]" />
-              Savings Calculator
-            </a>
-            <Link
-              to="/docs"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-[#CBD5E1] hover:bg-[#111520]"
-            >
-              <BookOpen className="h-4 w-4 text-[#F97316]" />
-              Documentation
-            </Link>
-            <Link
-              to="/docs/quickstart"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-lg bg-[#F97316] px-3 py-2 text-center font-semibold text-[#090B10]"
-            >
-              Deploy in 60s
-            </Link>
+        <div className="border-b border-[#E4E4DF] bg-[#F5F5F2] px-5 py-4 md:hidden">
+          <div className="flex flex-col gap-2">
+            {navLinks.map((item) =>
+              item.isRoute ? (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded px-2 py-2 text-sm text-[#111111] hover:bg-[#ECECE7]"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded px-2 py-2 text-sm text-[#111111] hover:bg-[#ECECE7]"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
+            <div className="mt-2 flex items-center gap-2 border-t border-[#E4E4DF] pt-3">
+              <a
+                href="https://github.com/katchlabs/open-ci"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex flex-1 items-center justify-center gap-1 rounded bg-[#111111] px-3 py-2 text-xs font-medium text-[#FFFFFF]"
+              >
+                GitHub
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
           </div>
         </div>
       )}

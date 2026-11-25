@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowRight, Cpu, Database, HardDrive, KeyRound, Layers, Lock, Server, ShieldCheck } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 
 interface MermaidBlockProps {
   chart: string;
@@ -6,72 +6,63 @@ interface MermaidBlockProps {
 
 function SystemOverviewDiagram() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        FIG · SYSTEM OVERVIEW
+      </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div className="rounded-xl border border-[#1E2636] bg-[#111520] p-4">
-          <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">
-            Ingress
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            01 · Ingress
           </div>
-          <div className="mt-1 font-display text-sm font-bold text-[#F8FAFC]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#111111]">
             GitHub Actions
           </div>
-          <p className="mt-1 font-mono text-[11px] text-[#94A3B8]">
-            workflow_job webhook or RS256 OIDC JWT
+          <p className="mt-1.5 text-[12px] text-[#555550]">
+            <code className="font-mono text-[11.5px] text-[#111111]">workflow_job</code> webhook or RS256 OIDC JWT
           </p>
         </div>
 
-        <div className="rounded-xl border border-[#F97316]/50 bg-[#F97316]/10 p-4">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#FB923C]">
-              Control Plane
-            </span>
-            <Server className="h-4 w-4 text-[#F97316]" />
+        <div className="rounded border border-[#111111] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            02 · Control Plane
           </div>
-          <div className="mt-1 font-display text-sm font-bold text-[#F8FAFC]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#111111]">
             open-ci (Rust / Axum / SQLite)
           </div>
-          <p className="mt-1 font-mono text-[11px] text-[#CBD5E1]">
+          <p className="mt-1.5 text-[12px] text-[#555550]">
             EC2 SigV4 · GCE REST · Single-use HMAC
           </p>
         </div>
 
-        <div className="rounded-xl border border-[#10B981]/40 bg-[#10B981]/10 p-4">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#10B981]">
-              Ephemeral Compute
-            </span>
-            <Cpu className="h-4 w-4 text-[#10B981]" />
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            03 · Ephemeral Compute
           </div>
-          <div className="mt-1 font-display text-sm font-bold text-[#F8FAFC]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#111111]">
             Spot / On-Demand VMs
           </div>
-          <p className="mt-1 font-mono text-[11px] text-[#CBD5E1]">
+          <p className="mt-1.5 text-[12px] text-[#555550]">
             Zero Cloud IAM · Auto-NVMe · Outbound HTTPS
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="flex items-center gap-3 rounded-xl border border-[#1E2636] bg-[#111520] px-4 py-3">
-          <HardDrive className="h-4 w-4 shrink-0 text-[#10B981]" />
-          <div>
-            <div className="font-mono text-xs font-semibold text-[#F8FAFC]">
-              open-ci cache (Actions Cache v2 Twirp + Blob)
-            </div>
-            <div className="font-mono text-[11px] text-[#94A3B8]">
-              Local NVMe · S3 / R2 / MinIO · Native GCS
-            </div>
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] px-4 py-3">
+          <div className="font-mono text-[12px] font-medium text-[#111111]">
+            open-ci cache (Actions v2 Twirp + Blob)
+          </div>
+          <div className="mt-0.5 text-[12px] text-[#555550]">
+            Local NVMe · S3 / R2 / MinIO · Native GCS
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-xl border border-[#1E2636] bg-[#111520] px-4 py-3">
-          <Database className="h-4 w-4 shrink-0 text-[#F97316]" />
-          <div>
-            <div className="font-mono text-xs font-semibold text-[#F8FAFC]">
-              Operator CLI · Prometheus /metrics · SSE /api/v1/events
-            </div>
-            <div className="font-mono text-[11px] text-[#94A3B8]">
-              Private loopback or VPN + Constant-Time Bearer
-            </div>
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] px-4 py-3">
+          <div className="font-mono text-[12px] font-medium text-[#111111]">
+            CLI · Prometheus /metrics · SSE /api/v1/events
+          </div>
+          <div className="mt-0.5 text-[12px] text-[#555550]">
+            Private loopback or VPN + Constant-Time Bearer
           </div>
         </div>
       </div>
@@ -79,73 +70,109 @@ function SystemOverviewDiagram() {
   );
 }
 
-function HexagonalArchitectureDiagram() {
+function CrateLayerTable({
+  label,
+  rows,
+}: {
+  label: string;
+  rows: Array<[string, string]>;
+}) {
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-[#1E2636] bg-[#111520] p-4">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">
-          Edge Binaries &amp; Routing
-        </div>
-        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-          {[
-            ['open-ci-cli', 'serve · cache · demo · validate · ctl · backup · agent bootstrap'],
-            ['open-ci-aws-janitor', 'Independent CLI / AWS Lambda (provided.al2023) expiry guard'],
-            ['actions/route', 'Zero-dependency TypeScript OIDC fail-closed router'],
-          ].map(([name, desc]) => (
-            <div key={name} className="rounded-lg border border-[#1E2636] bg-[#090B10] p-3">
-              <div className="font-mono text-xs font-semibold text-[#FB923C]">{name}</div>
-              <div className="mt-1 text-[11px] text-[#94A3B8]">{desc}</div>
+    <div className="overflow-hidden rounded border border-[#E4E4DF] bg-[#FFFFFF]">
+      <div className="border-b border-[#E4E4DF] bg-[#FAFAF8] px-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        {label}
+      </div>
+      <div className="divide-y divide-[#E4E4DF]">
+        {rows.map(([name, desc]) => (
+          <div
+            key={name}
+            className="grid grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[164px_1fr] sm:items-baseline sm:gap-4"
+          >
+            <div className="whitespace-nowrap font-mono text-[12px] font-medium text-[#111111]">
+              {name}
             </div>
+            <div className="text-[12.5px] leading-snug text-pretty text-[#555550]">{desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HexagonalArchitectureDiagram() {
+  const coreModules = [
+    'Typed Config',
+    'Worker State Machine',
+    'Admission Math',
+    'Placement Backoff',
+    'SecretString',
+    'Clock',
+  ];
+
+  return (
+    <div className="space-y-2.5">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        FIG · HEXAGONAL RUST WORKSPACE
+      </div>
+
+      <CrateLayerTable
+        label="01 · Edge Binaries & Routing"
+        rows={[
+          ['open-ci-cli', 'serve · cache · demo · validate · ctl · backup · agent bootstrap'],
+          ['open-ci-aws-janitor', 'Independent CLI / AWS Lambda (provided.al2023) expiry guard'],
+          ['actions/route', 'Zero-dependency TypeScript OIDC fail-closed router'],
+        ]}
+      />
+
+      <div className="flex justify-center py-0.5">
+        <ArrowDown className="h-3.5 w-3.5 text-[#6E6E67]" />
+      </div>
+
+      <CrateLayerTable
+        label="02 · Application & I/O Adapters"
+        rows={[
+          ['open-ci-server', 'ControlPlane, Reconciler, Axum HTTP, SSE, Prometheus'],
+          ['open-ci-cache', 'Actions v2 Twirp + Azure Blob + S3 / GCS / Local'],
+          ['open-ci-github', 'REST Client, HMAC Webhook, OIDC RS256, Credential Broker'],
+          ['open-ci-store', 'Async Store trait + SqliteStore WAL + fs2 file lock'],
+        ]}
+      />
+
+      <div className="flex justify-center py-0.5">
+        <ArrowDown className="h-3.5 w-3.5 text-[#6E6E67]" />
+      </div>
+
+      <CrateLayerTable
+        label="03 · Cloud Compute Providers"
+        rows={[
+          ['open-ci-provider-aws', 'Pure-Rust EC2 SigV4 XML + STS AssumeRole / WebIdentity'],
+          ['open-ci-provider-gcp', 'Compute Engine REST + maxRunDuration + IAM Impersonation'],
+          ['open-ci-provider-mock', 'Deterministic fault-injecting provider for demo & tests'],
+        ]}
+      />
+
+      <div className="flex justify-center py-0.5">
+        <ArrowDown className="h-3.5 w-3.5 text-[#111111]" />
+      </div>
+
+      <div className="rounded border border-[#111111] bg-[#FFFFFF] p-4 text-left">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div className="whitespace-nowrap font-mono text-[12.5px] font-medium text-[#111111]">
+            open-ci-core
+          </div>
+          <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+            Zero-I/O Domain Core
+          </div>
+        </div>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {coreModules.map((mod) => (
+            <span
+              key={mod}
+              className="rounded border border-[#E4E4DF] bg-[#FAFAF8] px-2 py-0.5 font-mono text-[11px] text-[#555550]"
+            >
+              {mod}
+            </span>
           ))}
-        </div>
-      </div>
-
-      <div className="flex justify-center">
-        <ArrowDown className="h-4 w-4 text-[#64748B]" />
-      </div>
-
-      <div className="rounded-xl border border-[#1E2636] bg-[#111520] p-4">
-        <div className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">
-          Application &amp; I/O Adapters
-        </div>
-        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            ['open-ci-server', 'ControlPlane, Reconciler, Axum HTTP, SSE, Prometheus'],
-            ['open-ci-cache', 'Actions v2 Twirp + Azure Blob + S3/GCS/Local'],
-            ['open-ci-github', 'REST Client, HMAC Webhook, OIDC RS256, Broker'],
-            ['open-ci-store', 'Async Store trait + SqliteStore WAL + fs2 lock'],
-          ].map(([name, desc]) => (
-            <div key={name} className="rounded-lg border border-[#1E2636] bg-[#090B10] p-3">
-              <div className="font-mono text-xs font-semibold text-[#F8FAFC]">{name}</div>
-              <div className="mt-1 text-[11px] text-[#94A3B8]">{desc}</div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-          {[
-            ['open-ci-provider-aws', 'Pure-Rust EC2 SigV4 XML + STS AssumeRole / WebIdentity'],
-            ['open-ci-provider-gcp', 'Compute Engine REST + maxRunDuration + IAM Impersonation'],
-            ['open-ci-provider-mock', 'Deterministic fault-injecting provider (demo & tests)'],
-          ].map(([name, desc]) => (
-            <div key={name} className="rounded-lg border border-[#2A354B] bg-[#090B10] p-3">
-              <div className="font-mono text-xs font-semibold text-[#10B981]">{name}</div>
-              <div className="mt-1 text-[11px] text-[#94A3B8]">{desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-center">
-        <ArrowDown className="h-4 w-4 text-[#F97316]" />
-      </div>
-
-      <div className="rounded-xl border border-[#F97316]/50 bg-[#F97316]/10 p-4 text-center">
-        <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-[#F8FAFC]">
-          <Layers className="h-4 w-4 text-[#F97316]" />
-          open-ci-core (Zero-I/O Domain Core)
-        </div>
-        <div className="mt-1 font-mono text-[11px] text-[#CBD5E1]">
-          Typed Config · Worker State Machine · Admission Math · Placement Backoff · SecretString · Clock
         </div>
       </div>
     </div>
@@ -154,29 +181,39 @@ function HexagonalArchitectureDiagram() {
 
 function WorkerStateDiagram() {
   const states = [
-    { name: 'Planned', tone: 'border-[#2A354B] text-[#CBD5E1]', note: 'UUID request_id persisted before cloud launch' },
-    { name: 'Creating', tone: 'border-sky-500/40 text-sky-300', note: 'Async cloud operation (GCP)' },
-    { name: 'Live', tone: 'border-[#10B981]/50 text-[#10B981] bg-[#10B981]/10', note: 'Sync receipt (AWS) or op DONE · burns 1x HMAC' },
-    { name: 'Retiring', tone: 'border-[#F97316]/50 text-[#FB923C] bg-[#F97316]/10', note: 'Job done / idle or lifetime expired / draining' },
-    { name: 'Gone', tone: 'border-[#1E2636] text-[#94A3B8]', note: 'Cloud VM deleted or confirmed absent' },
+    { name: 'Planned', emphasized: false, accent: false, note: 'UUID request_id persisted before launch' },
+    { name: 'Creating', emphasized: false, accent: false, note: 'Async cloud operation (GCP)' },
+    { name: 'Live', emphasized: true, accent: true, note: 'Sync receipt or op DONE · burns 1× HMAC' },
+    { name: 'Retiring', emphasized: false, accent: false, note: 'Job done / idle / lifetime expired' },
+    { name: 'Gone', emphasized: false, accent: false, note: 'Cloud VM deleted or confirmed absent' },
   ];
 
   return (
     <div className="space-y-3">
-      <div className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#64748B]">
-        Monotonic Worker Phase State Machine
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        FIG · MONOTONIC WORKER PHASE STATE MACHINE
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {states.map((st, idx) => (
           <div key={st.name} className="flex items-center gap-2">
-            <div className={`rounded-xl border bg-[#090B10] px-3.5 py-2.5 ${st.tone}`}>
-              <div className="font-mono text-xs font-bold">{st.name}</div>
-              <div className="mt-0.5 max-w-[140px] text-[10px] leading-snug text-[#94A3B8]">
+            <div
+              className={`rounded border bg-[#FFFFFF] px-3 py-2.5 ${
+                st.emphasized ? 'border-[#111111]' : 'border-[#E4E4DF]'
+              }`}
+            >
+              <div
+                className={`font-mono text-[12px] font-medium ${
+                  st.accent ? 'text-[#15803D]' : 'text-[#111111]'
+                }`}
+              >
+                {st.name}
+              </div>
+              <div className="mt-0.5 max-w-[132px] text-[11px] leading-snug text-[#555550]">
                 {st.note}
               </div>
             </div>
             {idx < states.length - 1 && (
-              <ArrowRight className="h-4 w-4 shrink-0 text-[#475569]" />
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#6E6E67]" />
             )}
           </div>
         ))}
@@ -187,48 +224,52 @@ function WorkerStateDiagram() {
 
 function TrustBoundariesDiagram() {
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <div className="rounded-xl border border-[#F97316]/40 bg-[#F97316]/[0.06] p-4">
-        <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#FB923C]">
-          <Lock className="h-4 w-4" />
-          1. Untrusted Job Zone
-        </div>
-        <p className="mt-2 text-xs text-[#CBD5E1]">
-          Ephemeral Runner VM running as non-root <code className="text-[#F8FAFC]">runner</code>
-        </p>
-        <ul className="mt-2.5 space-y-1 font-mono text-[11px] text-[#94A3B8]">
-          <li>• Zero Cloud IAM attached</li>
-          <li>• Zero inbound ports</li>
-          <li>• User-data scrubbed before job</li>
-          <li>• 1x HMAC bootstrap + 512B usage</li>
-        </ul>
+    <div className="space-y-3">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        FIG · SECURITY TRUST BOUNDARIES
       </div>
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#111111]">
+            01 · Untrusted Job Zone
+          </div>
+          <p className="mt-1.5 text-[12px] text-[#555550]">
+            Ephemeral Runner VM running as non-root{' '}
+            <code className="font-mono text-[#111111]">runner</code>
+          </p>
+          <ul className="mt-2.5 space-y-1 text-[12px] text-[#555550]">
+            <li>· Zero Cloud IAM attached</li>
+            <li>· Zero inbound ports</li>
+            <li>· User-data scrubbed before job</li>
+            <li>· 1× HMAC bootstrap + 512B usage</li>
+          </ul>
+        </div>
 
-      <div className="rounded-xl border border-[#2A354B] bg-[#111520] p-4">
-        <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#F8FAFC]">
-          <ShieldCheck className="h-4 w-4 text-[#10B981]" />
-          2. Public TLS Edge (Caddy)
+        <div className="rounded border border-[#E4E4DF] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#111111]">
+            02 · Public TLS Edge (Caddy)
+          </div>
+          <p className="mt-1.5 text-[12px] text-[#555550]">
+            Strict 6-path allowlist — blocks{' '}
+            <code className="font-mono text-[#111111]">/api/v1/*</code> and{' '}
+            <code className="font-mono text-[#111111]">/metrics</code> with 404.
+          </p>
+          <div className="mt-2.5 rounded border border-[#E4E4DF] bg-[#FAFAF8] p-2 font-mono text-[10.5px] text-[#111111]">
+            /healthz · /readyz · /v1/ingress/* · /v1/workers/*
+          </div>
         </div>
-        <p className="mt-2 text-xs text-[#CBD5E1]">
-          Strict 6-path public allowlist — blocks <code className="text-[#F8FAFC]">/api/v1/*</code> and{' '}
-          <code className="text-[#F8FAFC]">/metrics</code> with 404.
-        </p>
-        <div className="mt-2.5 rounded-lg border border-[#1E2636] bg-[#090B10] p-2.5 font-mono text-[11px] text-[#10B981]">
-          /healthz · /readyz · /v1/ingress/* · /v1/workers/*
-        </div>
-      </div>
 
-      <div className="rounded-xl border border-[#10B981]/40 bg-[#10B981]/[0.06] p-4">
-        <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#10B981]">
-          <KeyRound className="h-4 w-4" />
-          3. Hardened Controller Host
+        <div className="rounded border border-[#111111] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#111111]">
+            03 · Hardened Controller Host
+          </div>
+          <ul className="mt-2 space-y-1.5 text-[12px] text-[#555550]">
+            <li>· open-ci serve (RO /etc/open-ci)</li>
+            <li>· SQLite WAL + fs2 lock (0600)</li>
+            <li>· open-ci-broker owns github-app.pem</li>
+            <li>· open-ci cache (Private VPC)</li>
+          </ul>
         </div>
-        <ul className="mt-2 space-y-1.5 font-mono text-[11px] text-[#CBD5E1]">
-          <li>• <span className="text-[#F8FAFC]">open-ci serve</span> (User=open-ci, RO /etc/open-ci)</li>
-          <li>• <span className="text-[#F8FAFC]">SQLite WAL</span> + fs2 lock (0600)</li>
-          <li>• <span className="text-[#F8FAFC]">open-ci-broker</span> owns github-app.pem (0600)</li>
-          <li>• <span className="text-[#F8FAFC]">open-ci cache</span> (Private VPC, Ref-Scoped)</li>
-        </ul>
       </div>
     </div>
   );
@@ -240,50 +281,63 @@ function PyramidOfTrustDiagram() {
       num: 'L1',
       title: 'Codebase (API & Data Structures)',
       detail: 'Zero-I/O open-ci-core, SecretString, GitHubScope, deny_unknown_fields',
-      tone: 'border-[#10B981]/50 bg-[#10B981]/10 text-[#10B981]',
+      verified: true,
     },
     {
       num: 'L2',
       title: 'Static Analysis (Lints, Types, CI)',
       detail: 'unsafe_code=forbid, unwrap/expect/panic=deny, zero #[allow(, hexagonal purity, IMDSv2/zero-IAM checks',
-      tone: 'border-[#F97316]/50 bg-[#F97316]/10 text-[#FB923C]',
+      verified: true,
     },
     {
       num: 'L3',
       title: 'Verification (Empirical, Property, Formal)',
       detail: 'Compiled-binary driver (HTTP + SQLite DB), proptest invariants, SQLite WAL races, loopback wire contracts',
-      tone: 'border-sky-500/40 bg-sky-500/10 text-sky-300',
+      verified: true,
     },
     {
       num: 'L4',
       title: 'Prose (AGENTS.md & Focused Skills)',
       detail: 'Minimal operating manual; only what cannot be checked mechanically',
-      tone: 'border-[#2A354B] bg-[#111520] text-[#CBD5E1]',
+      verified: false,
     },
     {
       num: 'L5',
       title: 'Human Review',
       detail: 'Inspect empirical proof artifacts first, then skim diff for threat-model alignment',
-      tone: 'border-[#1E2636] bg-[#090B10] text-[#94A3B8]',
+      verified: false,
     },
   ];
 
   return (
     <div className="space-y-2.5">
-      {levels.map((lvl) => (
-        <div
-          key={lvl.num}
-          className={`flex flex-col gap-1 rounded-xl border px-4 py-3 sm:flex-row sm:items-center sm:gap-4 ${lvl.tone}`}
-        >
-          <span className="font-mono text-xs font-bold shrink-0">{lvl.num}</span>
-          <div className="min-w-0">
-            <div className="font-display text-sm font-bold text-[#F8FAFC]">
-              {lvl.title}
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6E6E67]">
+        FIG · PYRAMID OF TRUST
+      </div>
+      <div className="divide-y divide-[#E4E4DF] overflow-hidden rounded border border-[#E4E4DF] bg-[#FFFFFF]">
+        {levels.map((lvl) => (
+          <div
+            key={lvl.num}
+            className="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
+          >
+            <span
+              className={`w-8 shrink-0 font-mono text-[11px] font-medium ${
+                lvl.verified ? 'text-[#15803D]' : 'text-[#6E6E67]'
+              }`}
+            >
+              {lvl.num}
+            </span>
+            <div className="min-w-0">
+              <div className="text-[13px] font-medium text-[#111111]">
+                {lvl.title}
+              </div>
+              <div className="mt-0.5 text-[12px] text-[#555550]">
+                {lvl.detail}
+              </div>
             </div>
-            <div className="font-mono text-[11px] text-[#CBD5E1]">{lvl.detail}</div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
@@ -302,14 +356,14 @@ export function MermaidBlock({ chart }: MermaidBlockProps) {
     content = <SystemOverviewDiagram />;
   } else {
     content = (
-      <pre className="overflow-x-auto font-mono text-xs text-[#94A3B8]">
+      <pre className="overflow-x-auto font-mono text-xs text-[#555550]">
         {chart}
       </pre>
     );
   }
 
   return (
-    <div className="my-6 rounded-2xl border border-[#1E2636] bg-[#0B0E16] p-5">
+    <div className="my-6 rounded-lg border border-[#E4E4DF] bg-[#FAFAF8] p-4 sm:p-5">
       {content}
     </div>
   );
