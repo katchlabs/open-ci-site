@@ -12,9 +12,9 @@ import {
 import { AnimatedNumber } from './AnimatedNumber';
 
 const TEAM_PRESETS = [
-  { id: 'startup', label: '10 devs', sublabel: 'Startup' },
-  { id: 'growth', label: '40 devs', sublabel: 'Growth' },
-  { id: 'monorepo', label: '150 devs', sublabel: 'Scale' },
+  { id: 'startup', label: '4 devs + agents', sublabel: 'Lean' },
+  { id: 'growth', label: '12 devs + agents', sublabel: 'Velocity' },
+  { id: 'monorepo', label: '40 devs + agents', sublabel: 'Scale' },
 ] as const;
 
 const VCPU_OPTIONS: RunnerVcpu[] = [4, 8, 16];
@@ -76,11 +76,12 @@ export function SavingsCalculator() {
         >
           <div>
             <h2 className="text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-[#0B0D0E] sm:text-[44px]">
-              Run the numbers for your team.
+              See what agent-scale CI actually costs.
             </h2>
-            <p className="mt-3 max-w-[520px] text-[16px] leading-[1.55] text-[#525A55]">
-              Plug in your monthly GitHub Actions usage. Compare hosted rates,
-              managed runner SaaS, and raw Spot compute in your own cloud.
+            <p className="mt-3 max-w-[540px] text-[16px] leading-[1.55] text-[#525A55]">
+              Dial in your monthly GitHub Actions minutes — whether you’re 4
+              engineers running coding agents nonstop or a full org. Compare
+              hosted rates, managed SaaS, and raw Spot compute in your cloud.
             </p>
           </div>
 

@@ -31,9 +31,9 @@ const winBadge =
 /* ───────────────────────────── Savings ───────────────────────────── */
 
 const TEAM_CHIPS = [
-  { id: 'startup', label: '10 devs' },
-  { id: 'growth', label: '40 devs' },
-  { id: 'monorepo', label: '150 devs' },
+  { id: 'startup', label: '4 + agents' },
+  { id: 'growth', label: '12 + agents' },
+  { id: 'monorepo', label: '40 + agents' },
 ] as const;
 
 // Log-scale slider over 10k → 1M monthly minutes.
@@ -420,7 +420,7 @@ function FailoverPanel() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0 text-left">
-          <div className="text-[14px] font-medium text-[#0B0D0E]">Spot capacity disappears. Your build doesn’t.</div>
+          <div className="text-[14px] font-medium text-[#0B0D0E]">Spot disappears. Your agents keep shipping.</div>
           <div className="font-mono text-[11.5px] text-[#6B736E]">Preempted shards reroute across clouds automatically</div>
         </div>
         <button type="button" onClick={trigger} disabled={phase !== 'idle' && phase !== 'done'} className={btnDark}>

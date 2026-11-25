@@ -145,15 +145,15 @@ function InteractiveFailoverDemo() {
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0B0D0E]">
-              Zero failed builds
+              Zero stalled agent loops
             </h3>
             <span className="rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2.5 py-0.5 font-mono text-[10.5px] font-medium text-[#047857]">
               0 failed jobs
             </span>
           </div>
           <p className="mt-1.5 max-w-[540px] text-[14.5px] leading-[1.55] text-[#525A55]">
-            If Spot capacity dries up in one zone or cloud, jobs seamlessly
-            reroute to your next cloud — or fall back to GitHub-hosted runners.
+            If Spot capacity dries up in one zone or cloud, jobs reroute to your
+            next cloud — or fall back to GitHub-hosted runners automatically.
           </p>
         </div>
 
@@ -692,12 +692,14 @@ export function ProviderComparison() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="max-w-[660px] text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-[#0B0D0E] sm:text-[44px]">
-            Raw cloud economics. Without the Kubernetes tax.
+          <h2 className="max-w-[700px] text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-[#0B0D0E] sm:text-[44px]">
+            We tried the big players. The speed-to-cost ratio wasn’t there.
           </h2>
-          <p className="mt-3 max-w-[560px] text-[16px] leading-[1.55] text-[#525A55]">
-            Hosted runners charge 8× markup. Managed SaaS locks you into their
-            network. DIY Kubernetes costs an engineering team to maintain.
+          <p className="mt-3 max-w-[580px] text-[16px] leading-[1.55] text-[#525A55]">
+            GitHub-hosted runners are slow and expensive. Managed runner SaaS
+            still charges 6× cloud markup. Self-managed Kubernetes costs an
+            engineer to babysit. open-ci gives agent-heavy teams raw Spot
+            economics out of the box.
           </p>
         </motion.div>
 

@@ -29,9 +29,9 @@ export function ClosingCta() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="text-[38px] leading-[1.08] font-medium tracking-[-0.035em] text-[#FFFFFF] sm:text-[52px]"
         >
-          Keep your workflows. Keep your cloud.
+          Let your agents ship nonstop.
           <br />
-          <span className="text-[#34D399]">Cut your CI bill by 87%.</span>
+          <span className="text-[#34D399]">Stop paying 8× to test it.</span>
         </motion.h2>
 
         <motion.p
@@ -39,10 +39,10 @@ export function ClosingCta() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto mt-5 max-w-[520px] text-[16px] leading-[1.6] text-[#9AA39E]"
+          className="mx-auto mt-5 max-w-[540px] text-[16px] leading-[1.6] text-[#9AA39E]"
         >
-          Try it locally in 30 seconds — no AWS or GCP account required. Or
-          deploy to your own cloud in under 5 minutes.
+          Keep your workflows, keep your cloud, burn your existing AWS &amp; GCP
+          credits. Try a local demo in 30 seconds or deploy in 5 minutes.
         </motion.p>
 
         {/* Copyable 30-Second Local Demo Command */}

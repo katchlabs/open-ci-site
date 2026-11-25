@@ -157,8 +157,8 @@ export interface CalculatorPreset {
 export const CALCULATOR_PRESETS: CalculatorPreset[] = [
   {
     id: 'startup',
-    name: 'Startup',
-    subtitle: '10 devs · 40k 4-vCPU min/mo',
+    name: 'Lean Agentic Team',
+    subtitle: '4 devs + agents · 40k 4-vCPU min/mo',
     monthlyMinutes: 40_000,
     vcpu: 4,
     cloudProfile: 'gcp-x64',
@@ -166,8 +166,8 @@ export const CALCULATOR_PRESETS: CalculatorPreset[] = [
   },
   {
     id: 'growth',
-    name: 'Growth Team',
-    subtitle: '40 devs · 200k 4-vCPU min/mo',
+    name: 'High-Velocity Team',
+    subtitle: '12 devs + agents · 200k 4-vCPU min/mo',
     monthlyMinutes: 200_000,
     vcpu: 4,
     cloudProfile: 'gcp-x64',
@@ -175,8 +175,8 @@ export const CALCULATOR_PRESETS: CalculatorPreset[] = [
   },
   {
     id: 'monorepo',
-    name: 'Monorepo Scale',
-    subtitle: '150 devs · 500k 8-vCPU min/mo',
+    name: 'Agent-Heavy Org',
+    subtitle: '40 devs + agents · 500k 8-vCPU min/mo',
     monthlyMinutes: 500_000,
     vcpu: 8,
     cloudProfile: 'gcp-x64',

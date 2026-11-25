@@ -14,23 +14,23 @@ import { AnimatedNumber } from './AnimatedNumber';
 const CHAPTERS = [
   {
     index: '01',
-    label: 'The Markup',
-    title: "You're paying for markup, not compute.",
-    body: 'Hosted CI providers rent the exact same cloud VMs you can rent directly — then charge 5× to 10× for the privilege. Every month, 87% of your CI invoice disappears into vendor margin.',
+    label: 'Why Now',
+    title: 'A team of 4 now pushes like a team of 45.',
+    body: 'Coding agents don’t push twice a day — they open PRs, run test suites, fix failures, and re-run nonstop. Hosted CI was priced for human cadence, so a 4-person team’s invoice runs away overnight.',
     targetProgress: 0.18,
   },
   {
     index: '02',
-    label: 'The Speed',
-    title: 'Faster builds on machines twice the size.',
-    body: 'Because raw Spot instances cost a fraction of hosted runners, you can run 4–8 vCPU VMs with local NVMe scratch and instant caching — cutting real monorepo suites up to 45%.',
+    label: 'The Trap',
+    title: 'Slow CI stalls your agents. Fast SaaS melts your wallet.',
+    body: 'Every 10-minute test queue leaves agents sitting idle. We tried the big managed runner players, but at 6×–8× cloud markup the speed-to-cost ratio simply wasn’t there. Raw Spot lets you run 4–8 vCPU VMs for a fraction of the price.',
     targetProgress: 0.56,
   },
   {
     index: '03',
-    label: 'The Payoff',
-    title: 'Your cloud. Your credits. $25,020 back every year.',
-    body: 'Compute bills go straight to your existing AWS and GCP accounts. Burn cloud credits you already have, keep code inside your VPC, and pay $0 to us forever.',
+    label: 'Enter open-ci',
+    title: 'Uncap your agents. Keep $25,020 a year.',
+    body: 'We built open-ci so small teams can run fast, massive CI fleets inside their own AWS and GCP accounts at raw Spot rates. Burn cloud credits you already have, keep code in your VPC, and pay $0 markup forever.',
     targetProgress: 0.88,
   },
 ] as const;
@@ -57,10 +57,10 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
-            Monthly CI Spend · 40-Dev Team (200k 4-vCPU min)
+            Monthly CI Spend · 200k 4-vCPU min/mo (Agent-Scale Volume)
           </div>
           <div className="mt-1 text-[14px] text-[#525A55]">
-            Exact same Linux compute. Dramatically different invoice.
+            We tried the big players. The speed-to-cost ratio wasn’t there.
           </div>
         </div>
         <span className="rounded-full border border-[#FECACA] bg-[#FEF2F2] px-2.5 py-1 font-mono text-[11px] font-medium text-[#DC2626] whitespace-nowrap">
@@ -149,10 +149,10 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
-            Measured Production Monorepo Benchmarks
+            Unblocking Agent Loops · Measured 20-Shard Monorepo
           </div>
           <div className="mt-1 text-[14px] text-[#525A55]">
-            Scroll to scrub the live 20-shard build race.
+            Scroll to watch hosted 2-vCPU runners stall a build vs. open-ci Spot.
           </div>
         </div>
         <div className="flex items-center gap-1.5 rounded-lg border border-[#E2E7E4] bg-[#F7F9F8] px-2.5 py-1 font-mono text-[12px] font-medium text-[#0B0D0E] tabular-nums">
@@ -258,10 +258,10 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
-            Annual Bottom-Line Impact
+            The Speed-to-Cost Ratio, Fixed
           </div>
           <div className="mt-1 text-[14px] text-[#525A55]">
-            Your AWS &amp; GCP accounts. Zero vendor fees.
+            Faster loops for your agents. Raw Spot prices on your bill.
           </div>
         </div>
         <span className="inline-flex items-center gap-1 rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2.5 py-1 font-mono text-[11px] font-medium text-[#047857]">

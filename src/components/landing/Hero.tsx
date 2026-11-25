@@ -99,22 +99,22 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#10B981] opacity-50 motion-reduce:hidden" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#10B981]" />
             </span>
-            <span>Apache-2.0 open source</span>
+            <span>Built for agent-era CI</span>
             <span className="text-[#C9D0CB]">·</span>
-            <span className="text-[#0B0D0E]">AWS &amp; GCP Spot runners</span>
+            <span className="text-[#0B0D0E]">Apache-2.0 · AWS &amp; GCP Spot</span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.05, ease: EASE }}
-            className="mt-6 text-[40px] leading-[1.04] font-medium tracking-[-0.04em] text-[#0B0D0E] sm:text-[56px] lg:text-[66px]"
+            className="mt-6 text-[38px] leading-[1.05] font-medium tracking-[-0.04em] text-[#0B0D0E] sm:text-[54px] lg:text-[64px]"
           >
-            GitHub Actions at raw
+            A team of 4 now pushes like 40.
             <br />
-            cloud{' '}
+            Your CI bill{' '}
             <span className="relative inline-block text-[#059669]">
-              Spot prices.
+              shouldn’t.
               <motion.span
                 aria-hidden="true"
                 initial={{ scaleX: 0 }}
@@ -129,9 +129,9 @@ export function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: EASE }}
-            className="mx-auto mt-5 max-w-[540px] text-[16.5px] leading-[1.55] text-[#525A55] sm:text-[18px]"
+            className="mx-auto mt-5 max-w-[600px] text-[16px] leading-[1.55] text-[#525A55] sm:text-[18px]"
           >
-            Run builds in your own AWS and GCP accounts. Faster machines, up to 90% lower bills, zero vendor lock-in.
+            Coding agents break traditional CI: slow runners stall every loop, and hosted providers charge 8× markup for speed. Run fast Spot runners in your own AWS &amp; GCP accounts for up to 90% less.
           </motion.p>
 
           <motion.div
