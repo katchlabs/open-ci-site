@@ -7,61 +7,61 @@ interface MermaidBlockProps {
 function SystemOverviewDiagram() {
   return (
     <div className="space-y-3">
-      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         FIG · SYSTEM OVERVIEW
       </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B7280]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B736E]">
             01 · Ingress
           </div>
-          <div className="mt-1.5 text-[14px] font-medium text-[#0A0A0A]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#0B0D0E]">
             GitHub Actions
           </div>
-          <p className="mt-1.5 text-[12px] text-[#4B5563]">
-            <code className="font-mono text-[11.5px] text-[#0A0A0A]">workflow_job</code> webhook or RS256 OIDC JWT
+          <p className="mt-1.5 text-[12px] text-[#525A55]">
+            <code className="font-mono text-[11.5px] text-[#0B0D0E]">workflow_job</code> webhook or RS256 OIDC JWT
           </p>
         </div>
 
-        <div className="rounded border border-[#0A0A0A] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B7280]">
+        <div className="rounded border border-[#0B0D0E] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B736E]">
             02 · Control Plane
           </div>
-          <div className="mt-1.5 text-[14px] font-medium text-[#0A0A0A]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#0B0D0E]">
             open-ci (Rust / Axum / SQLite)
           </div>
-          <p className="mt-1.5 text-[12px] text-[#4B5563]">
+          <p className="mt-1.5 text-[12px] text-[#525A55]">
             EC2 SigV4 · GCE REST · Single-use HMAC
           </p>
         </div>
 
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B7280]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.08em] text-[#6B736E]">
             03 · Ephemeral Compute
           </div>
-          <div className="mt-1.5 text-[14px] font-medium text-[#0A0A0A]">
+          <div className="mt-1.5 text-[14px] font-medium text-[#0B0D0E]">
             Spot / On-Demand VMs
           </div>
-          <p className="mt-1.5 text-[12px] text-[#4B5563]">
+          <p className="mt-1.5 text-[12px] text-[#525A55]">
             Zero Cloud IAM · Auto-NVMe · Outbound HTTPS
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] px-4 py-3">
-          <div className="font-mono text-[12px] font-medium text-[#0A0A0A]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] px-4 py-3">
+          <div className="font-mono text-[12px] font-medium text-[#0B0D0E]">
             open-ci cache (Actions v2 Twirp + Blob)
           </div>
-          <div className="mt-0.5 text-[12px] text-[#4B5563]">
+          <div className="mt-0.5 text-[12px] text-[#525A55]">
             Local NVMe · S3 / R2 / MinIO · Native GCS
           </div>
         </div>
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] px-4 py-3">
-          <div className="font-mono text-[12px] font-medium text-[#0A0A0A]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] px-4 py-3">
+          <div className="font-mono text-[12px] font-medium text-[#0B0D0E]">
             CLI · Prometheus /metrics · SSE /api/v1/events
           </div>
-          <div className="mt-0.5 text-[12px] text-[#4B5563]">
+          <div className="mt-0.5 text-[12px] text-[#525A55]">
             Private loopback or VPN + Constant-Time Bearer
           </div>
         </div>
@@ -78,20 +78,20 @@ function CrateLayerTable({
   rows: Array<[string, string]>;
 }) {
   return (
-    <div className="overflow-hidden rounded border border-[#E5E7EB] bg-[#FFFFFF]">
-      <div className="border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+    <div className="overflow-hidden rounded border border-[#E2E7E4] bg-[#FFFFFF]">
+      <div className="border-b border-[#E2E7E4] bg-[#FAFBFA] px-4 py-2 font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         {label}
       </div>
-      <div className="divide-y divide-[#E5E7EB]">
+      <div className="divide-y divide-[#E2E7E4]">
         {rows.map(([name, desc]) => (
           <div
             key={name}
             className="grid grid-cols-1 gap-1 px-4 py-2.5 sm:grid-cols-[164px_1fr] sm:items-baseline sm:gap-4"
           >
-            <div className="whitespace-nowrap font-mono text-[12px] font-medium text-[#0A0A0A]">
+            <div className="whitespace-nowrap font-mono text-[12px] font-medium text-[#0B0D0E]">
               {name}
             </div>
-            <div className="text-[12.5px] leading-snug text-pretty text-[#4B5563]">{desc}</div>
+            <div className="text-[12.5px] leading-snug text-pretty text-[#525A55]">{desc}</div>
           </div>
         ))}
       </div>
@@ -111,7 +111,7 @@ function HexagonalArchitectureDiagram() {
 
   return (
     <div className="space-y-2.5">
-      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         FIG · HEXAGONAL RUST WORKSPACE
       </div>
 
@@ -125,7 +125,7 @@ function HexagonalArchitectureDiagram() {
       />
 
       <div className="flex justify-center py-0.5">
-        <ArrowDown className="h-3.5 w-3.5 text-[#6B7280]" />
+        <ArrowDown className="h-3.5 w-3.5 text-[#6B736E]" />
       </div>
 
       <CrateLayerTable
@@ -139,7 +139,7 @@ function HexagonalArchitectureDiagram() {
       />
 
       <div className="flex justify-center py-0.5">
-        <ArrowDown className="h-3.5 w-3.5 text-[#6B7280]" />
+        <ArrowDown className="h-3.5 w-3.5 text-[#6B736E]" />
       </div>
 
       <CrateLayerTable
@@ -152,15 +152,15 @@ function HexagonalArchitectureDiagram() {
       />
 
       <div className="flex justify-center py-0.5">
-        <ArrowDown className="h-3.5 w-3.5 text-[#0A0A0A]" />
+        <ArrowDown className="h-3.5 w-3.5 text-[#0B0D0E]" />
       </div>
 
-      <div className="rounded border border-[#0A0A0A] bg-[#FFFFFF] p-4 text-left">
+      <div className="rounded border border-[#0B0D0E] bg-[#FFFFFF] p-4 text-left">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <div className="whitespace-nowrap font-mono text-[12.5px] font-medium text-[#0A0A0A]">
+          <div className="whitespace-nowrap font-mono text-[12.5px] font-medium text-[#0B0D0E]">
             open-ci-core
           </div>
-          <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+          <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
             Zero-I/O Domain Core
           </div>
         </div>
@@ -168,7 +168,7 @@ function HexagonalArchitectureDiagram() {
           {coreModules.map((mod) => (
             <span
               key={mod}
-              className="rounded border border-[#E5E7EB] bg-[#F9FAFB] px-2 py-0.5 font-mono text-[11px] text-[#4B5563]"
+              className="rounded border border-[#E2E7E4] bg-[#FAFBFA] px-2 py-0.5 font-mono text-[11px] text-[#525A55]"
             >
               {mod}
             </span>
@@ -190,7 +190,7 @@ function WorkerStateDiagram() {
 
   return (
     <div className="space-y-3">
-      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         FIG · MONOTONIC WORKER PHASE STATE MACHINE
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -198,22 +198,22 @@ function WorkerStateDiagram() {
           <div key={st.name} className="flex items-center gap-2">
             <div
               className={`rounded border bg-[#FFFFFF] px-3 py-2.5 ${
-                st.emphasized ? 'border-[#0A0A0A]' : 'border-[#E5E7EB]'
+                st.emphasized ? 'border-[#0B0D0E]' : 'border-[#E2E7E4]'
               }`}
             >
               <div
                 className={`font-mono text-[12px] font-medium ${
-                  st.accent ? 'text-[#15803D]' : 'text-[#0A0A0A]'
+                  st.accent ? 'text-[#047857]' : 'text-[#0B0D0E]'
                 }`}
               >
                 {st.name}
               </div>
-              <div className="mt-0.5 max-w-[132px] text-[11px] leading-snug text-[#4B5563]">
+              <div className="mt-0.5 max-w-[132px] text-[11px] leading-snug text-[#525A55]">
                 {st.note}
               </div>
             </div>
             {idx < states.length - 1 && (
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#6B7280]" />
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#6B736E]" />
             )}
           </div>
         ))}
@@ -225,19 +225,19 @@ function WorkerStateDiagram() {
 function TrustBoundariesDiagram() {
   return (
     <div className="space-y-3">
-      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         FIG · SECURITY TRUST BOUNDARIES
       </div>
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[11px] font-medium text-[#0A0A0A]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#0B0D0E]">
             01 · Untrusted Job Zone
           </div>
-          <p className="mt-1.5 text-[12px] text-[#4B5563]">
+          <p className="mt-1.5 text-[12px] text-[#525A55]">
             Ephemeral Runner VM running as non-root{' '}
-            <code className="font-mono text-[#0A0A0A]">runner</code>
+            <code className="font-mono text-[#0B0D0E]">runner</code>
           </p>
-          <ul className="mt-2.5 space-y-1 text-[12px] text-[#4B5563]">
+          <ul className="mt-2.5 space-y-1 text-[12px] text-[#525A55]">
             <li>· Zero Cloud IAM attached</li>
             <li>· Zero inbound ports</li>
             <li>· User-data scrubbed before job</li>
@@ -245,25 +245,25 @@ function TrustBoundariesDiagram() {
           </ul>
         </div>
 
-        <div className="rounded border border-[#E5E7EB] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[11px] font-medium text-[#0A0A0A]">
+        <div className="rounded border border-[#E2E7E4] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#0B0D0E]">
             02 · Public TLS Edge (Caddy)
           </div>
-          <p className="mt-1.5 text-[12px] text-[#4B5563]">
+          <p className="mt-1.5 text-[12px] text-[#525A55]">
             Strict 6-path allowlist — blocks{' '}
-            <code className="font-mono text-[#0A0A0A]">/api/v1/*</code> and{' '}
-            <code className="font-mono text-[#0A0A0A]">/metrics</code> with 404.
+            <code className="font-mono text-[#0B0D0E]">/api/v1/*</code> and{' '}
+            <code className="font-mono text-[#0B0D0E]">/metrics</code> with 404.
           </p>
-          <div className="mt-2.5 rounded border border-[#E5E7EB] bg-[#F9FAFB] p-2 font-mono text-[10.5px] text-[#0A0A0A]">
+          <div className="mt-2.5 rounded border border-[#E2E7E4] bg-[#FAFBFA] p-2 font-mono text-[10.5px] text-[#0B0D0E]">
             /healthz · /readyz · /v1/ingress/* · /v1/workers/*
           </div>
         </div>
 
-        <div className="rounded border border-[#0A0A0A] bg-[#FFFFFF] p-4">
-          <div className="font-mono text-[11px] font-medium text-[#0A0A0A]">
+        <div className="rounded border border-[#0B0D0E] bg-[#FFFFFF] p-4">
+          <div className="font-mono text-[11px] font-medium text-[#0B0D0E]">
             03 · Hardened Controller Host
           </div>
-          <ul className="mt-2 space-y-1.5 text-[12px] text-[#4B5563]">
+          <ul className="mt-2 space-y-1.5 text-[12px] text-[#525A55]">
             <li>· open-ci serve (RO /etc/open-ci)</li>
             <li>· SQLite WAL + fs2 lock (0600)</li>
             <li>· open-ci-broker owns github-app.pem</li>
@@ -311,10 +311,10 @@ function PyramidOfTrustDiagram() {
 
   return (
     <div className="space-y-2.5">
-      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B7280]">
+      <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-[#6B736E]">
         FIG · PYRAMID OF TRUST
       </div>
-      <div className="divide-y divide-[#E5E7EB] overflow-hidden rounded border border-[#E5E7EB] bg-[#FFFFFF]">
+      <div className="divide-y divide-[#E2E7E4] overflow-hidden rounded border border-[#E2E7E4] bg-[#FFFFFF]">
         {levels.map((lvl) => (
           <div
             key={lvl.num}
@@ -322,16 +322,16 @@ function PyramidOfTrustDiagram() {
           >
             <span
               className={`w-8 shrink-0 font-mono text-[11px] font-medium ${
-                lvl.verified ? 'text-[#15803D]' : 'text-[#6B7280]'
+                lvl.verified ? 'text-[#047857]' : 'text-[#6B736E]'
               }`}
             >
               {lvl.num}
             </span>
             <div className="min-w-0">
-              <div className="text-[13px] font-medium text-[#0A0A0A]">
+              <div className="text-[13px] font-medium text-[#0B0D0E]">
                 {lvl.title}
               </div>
-              <div className="mt-0.5 text-[12px] text-[#4B5563]">
+              <div className="mt-0.5 text-[12px] text-[#525A55]">
                 {lvl.detail}
               </div>
             </div>
@@ -356,14 +356,14 @@ export function MermaidBlock({ chart }: MermaidBlockProps) {
     content = <SystemOverviewDiagram />;
   } else {
     content = (
-      <pre className="overflow-x-auto font-mono text-xs text-[#4B5563]">
+      <pre className="overflow-x-auto font-mono text-xs text-[#525A55]">
         {chart}
       </pre>
     );
   }
 
   return (
-    <div className="my-6 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-4 sm:p-5">
+    <div className="my-6 rounded-lg border border-[#E2E7E4] bg-[#FAFBFA] p-4 sm:p-5">
       {content}
     </div>
   );

@@ -56,10 +56,10 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
     <div className="flex h-full flex-col justify-between">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B7280]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
             Monthly CI Spend · 40-Dev Team (200k 4-vCPU min)
           </div>
-          <div className="mt-1 text-[14px] text-[#4B5563]">
+          <div className="mt-1 text-[14px] text-[#525A55]">
             Exact same Linux compute. Dramatically different invoice.
           </div>
         </div>
@@ -69,21 +69,21 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
       </div>
 
       {/* Architectural Towers */}
-      <div className="relative mt-6 flex flex-1 items-end justify-around gap-4 border-b border-[#E5E7EB] px-2 pt-8 pb-0 sm:gap-8 sm:px-6">
+      <div className="relative mt-6 flex flex-1 items-end justify-around gap-4 border-b border-[#E2E7E4] px-2 pt-8 pb-0 sm:gap-8 sm:px-6">
         {/* Horizontal subtle guide lines */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[236px] border-t border-dashed border-[#E5E7EB]" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-[236px] border-t border-dashed border-[#E2E7E4]" />
         <div className="pointer-events-none absolute inset-x-0 bottom-[118px] border-t border-dashed border-[#F0F1F3]" />
 
         {/* Tower 1: GitHub Actions */}
         <div className="flex w-32 flex-col items-center">
           <div className="mb-2 text-center">
-            <div className="font-mono text-[18px] font-medium text-[#0A0A0A] tabular-nums">
+            <div className="font-mono text-[18px] font-medium text-[#0B0D0E] tabular-nums">
               $2,400
             </div>
-            <div className="font-mono text-[10.5px] text-[#6B7280]">$0.012/min</div>
+            <div className="font-mono text-[10.5px] text-[#6B736E]">$0.012/min</div>
           </div>
           <div
-            className="w-full rounded-t-xl border border-b-0 border-[#D1D5DB] bg-gradient-to-b from-[#E5E7EB] to-[#D1D5DB] transition-[height] duration-75"
+            className="w-full rounded-t-xl border border-b-0 border-[#D3D9D5] bg-gradient-to-b from-[#E2E7E4] to-[#D3D9D5] transition-[height] duration-75"
             style={{ height: `${githubH}px` }}
           />
         </div>
@@ -91,13 +91,13 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
         {/* Tower 2: Managed SaaS */}
         <div className="flex w-32 flex-col items-center">
           <div className="mb-2 text-center">
-            <div className="font-mono text-[18px] font-medium text-[#4B5563] tabular-nums">
+            <div className="font-mono text-[18px] font-medium text-[#525A55] tabular-nums">
               $1,600
             </div>
-            <div className="font-mono text-[10.5px] text-[#6B7280]">$0.008/min</div>
+            <div className="font-mono text-[10.5px] text-[#6B736E]">$0.008/min</div>
           </div>
           <div
-            className="w-full rounded-t-xl border border-b-0 border-[#E5E7EB] bg-gradient-to-b from-[#F1F2F4] to-[#E5E7EB] transition-[height] duration-75"
+            className="w-full rounded-t-xl border border-b-0 border-[#E2E7E4] bg-gradient-to-b from-[#F0F3F1] to-[#E2E7E4] transition-[height] duration-75"
             style={{ height: `${saasH}px` }}
           />
         </div>
@@ -106,28 +106,28 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
         <div className="relative flex w-36 flex-col items-center">
           {/* Translucent Vendor Markup Bracket filling the gap above Spot */}
           <div
-            className="mb-1 flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-[#15803D]/35 bg-[#F0FDF4]/70 px-2 text-center transition-[height,opacity] duration-150"
+            className="mb-1 flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-[#047857]/35 bg-[#ECFDF5]/70 px-2 text-center transition-[height,opacity] duration-150"
             style={{
               height: `${Math.max(88, gapH - 54)}px`,
               opacity: Math.min(1, 0.35 + riseFactor * 0.9),
             }}
           >
-            <span className="font-mono text-[14px] font-medium text-[#15803D] tabular-nums">
+            <span className="font-mono text-[14px] font-medium text-[#047857] tabular-nums">
               −$2,085/mo
             </span>
-            <span className="mt-0.5 text-[11px] font-medium text-[#15803D]/85">
+            <span className="mt-0.5 text-[11px] font-medium text-[#047857]/85">
               87% vendor markup
             </span>
           </div>
 
           <div className="mb-1.5 text-center">
-            <div className="font-mono text-[18px] font-semibold text-[#15803D] tabular-nums">
+            <div className="font-mono text-[18px] font-semibold text-[#047857] tabular-nums">
               $315
             </div>
-            <div className="font-mono text-[10.5px] text-[#15803D]/80">$0.0012/min</div>
+            <div className="font-mono text-[10.5px] text-[#047857]/80">$0.0012/min</div>
           </div>
           <div
-            className="w-full rounded-t-xl border border-b-0 border-[#15803D] bg-gradient-to-b from-[#16A34A] to-[#15803D] transition-[height] duration-75"
+            className="w-full rounded-t-xl border border-b-0 border-[#047857] bg-gradient-to-b from-[#10B981] to-[#047857] transition-[height] duration-75"
             style={{ height: `${spotH}px` }}
           />
         </div>
@@ -135,9 +135,9 @@ function ChapterOneVisual({ riseFactor }: { riseFactor: number }) {
 
       {/* Baseline Labels */}
       <div className="mt-3 flex items-center justify-around gap-4 px-2 text-center text-[12.5px] font-medium sm:gap-8 sm:px-6">
-        <div className="w-32 text-[#4B5563]">GitHub Actions</div>
-        <div className="w-32 text-[#4B5563]">Managed SaaS</div>
-        <div className="w-36 text-[#0A0A0A]">open-ci (Spot)</div>
+        <div className="w-32 text-[#525A55]">GitHub Actions</div>
+        <div className="w-32 text-[#525A55]">Managed SaaS</div>
+        <div className="w-36 text-[#0B0D0E]">open-ci (Spot)</div>
       </div>
     </div>
   );
@@ -148,27 +148,27 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
     <div className="flex h-full flex-col justify-between">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B7280]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
             Measured Production Monorepo Benchmarks
           </div>
-          <div className="mt-1 text-[14px] text-[#4B5563]">
+          <div className="mt-1 text-[14px] text-[#525A55]">
             Scroll to scrub the live 20-shard build race.
           </div>
         </div>
-        <div className="flex items-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-[#F7F8FA] px-2.5 py-1 font-mono text-[12px] font-medium text-[#0A0A0A] tabular-nums">
-          <Clock className="h-3.5 w-3.5 text-[#6B7280]" />
+        <div className="flex items-center gap-1.5 rounded-lg border border-[#E2E7E4] bg-[#F7F9F8] px-2.5 py-1 font-mono text-[12px] font-medium text-[#0B0D0E] tabular-nums">
+          <Clock className="h-3.5 w-3.5 text-[#6B736E]" />
           <span>{formatRaceClock(raceSeconds)}</span>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex items-center gap-5 text-[11.5px] text-[#4B5563]">
+      <div className="mt-4 flex items-center gap-5 text-[11.5px] text-[#525A55]">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-[#CBD0D8]" />
+          <span className="h-2 w-2 rounded-full bg-[#CDD4CF]" />
           GitHub Hosted
         </span>
-        <span className="inline-flex items-center gap-1.5 font-medium text-[#0A0A0A]">
-          <span className="h-2 w-2 rounded-full bg-[#16A34A]" />
+        <span className="inline-flex items-center gap-1.5 font-medium text-[#0B0D0E]">
+          <span className="h-2 w-2 rounded-full bg-[#10B981]" />
           open-ci Spot + NVMe Cache
         </span>
       </div>
@@ -186,18 +186,18 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
             <div key={row.suite} className="space-y-1.5">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-medium text-[#0A0A0A]">
+                  <span className="text-[13px] font-medium text-[#0B0D0E]">
                     {row.suite}
                   </span>
-                  <span className="font-mono text-[10.5px] text-[#6B7280]">
+                  <span className="font-mono text-[10.5px] text-[#6B736E]">
                     {row.shards}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[11px] text-[#6B7280] tabular-nums">
+                  <span className="font-mono text-[11px] text-[#6B736E] tabular-nums">
                     {row.beforeLabel} →{' '}
-                    <span className="font-medium text-[#15803D]">
+                    <span className="font-medium text-[#047857]">
                       {row.afterLabel}
                     </span>
                   </span>
@@ -208,7 +208,7 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
                       scale: openCiFinished ? 1 : 0.94,
                     }}
                     transition={{ type: 'spring', stiffness: 320, damping: 24 }}
-                    className="rounded-full border border-[#BBF7D0] bg-[#F0FDF4] px-2 py-0.5 font-mono text-[10.5px] font-medium text-[#15803D] whitespace-nowrap"
+                    className="rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2 py-0.5 font-mono text-[10.5px] font-medium text-[#047857] whitespace-nowrap"
                   >
                     {row.fasterPct}% faster
                   </motion.span>
@@ -218,16 +218,16 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
               {/* Dual Bar Track */}
               <div className="space-y-1">
                 {/* Hosted bar */}
-                <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#F1F2F4]">
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#F0F3F1]">
                   <div
-                    className="h-full rounded-full bg-[#CBD0D8]"
+                    className="h-full rounded-full bg-[#CDD4CF]"
                     style={{ width: `${Math.max(2, hostedPct)}%` }}
                   />
                 </div>
                 {/* open-ci bar */}
-                <div className="relative h-3.5 w-full overflow-hidden rounded-full bg-[#F1F2F4]">
+                <div className="relative h-3.5 w-full overflow-hidden rounded-full bg-[#F0F3F1]">
                   <div
-                    className="flex h-full items-center justify-end rounded-full bg-gradient-to-r from-[#22C55E] to-[#15803D] pr-1.5"
+                    className="flex h-full items-center justify-end rounded-full bg-gradient-to-r from-[#10B981] to-[#047857] pr-1.5"
                     style={{ width: `${Math.max(2, openCiPct)}%` }}
                   >
                     {openCiFinished && (
@@ -241,7 +241,7 @@ function ChapterTwoVisual({ raceSeconds }: { raceSeconds: number }) {
         })}
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-[#F1F2F4] pt-3 font-mono text-[11px] text-[#6B7280]">
+      <div className="mt-3 flex items-center justify-between border-t border-[#F0F3F1] pt-3 font-mono text-[11px] text-[#6B736E]">
         <span>0m 00s</span>
         <span>5m 00s</span>
         <span>10m 33s</span>
@@ -257,14 +257,14 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
     <div className="flex h-full flex-col justify-between">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B7280]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
             Annual Bottom-Line Impact
           </div>
-          <div className="mt-1 text-[14px] text-[#4B5563]">
+          <div className="mt-1 text-[14px] text-[#525A55]">
             Your AWS &amp; GCP accounts. Zero vendor fees.
           </div>
         </div>
-        <span className="inline-flex items-center gap-1 rounded-full border border-[#BBF7D0] bg-[#F0FDF4] px-2.5 py-1 font-mono text-[11px] font-medium text-[#15803D]">
+        <span className="inline-flex items-center gap-1 rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2.5 py-1 font-mono text-[11px] font-medium text-[#047857]">
           <Sparkles className="h-3 w-3" />
           87% reduction
         </span>
@@ -272,13 +272,13 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
 
       {/* Invoice Compression Card */}
       <div className="my-auto py-4">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 sm:gap-5 sm:p-6">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-2xl border border-[#E2E7E4] bg-[#FAFBFA] p-5 sm:gap-5 sm:p-6">
           <div>
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#6B7280]">
+            <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#6B736E]">
               Before · GitHub Hosted
             </div>
             <div className="relative mt-1.5 inline-block">
-              <span className="font-mono text-[26px] font-medium text-[#6B7280] tabular-nums sm:text-[32px]">
+              <span className="font-mono text-[26px] font-medium text-[#6B736E] tabular-nums sm:text-[32px]">
                 $2,400
               </span>
               <motion.span
@@ -288,21 +288,21 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
                 className="absolute inset-x-0 top-1/2 h-[2px] origin-left bg-[#DC2626]"
               />
             </div>
-            <div className="mt-0.5 text-[12px] text-[#6B7280]">per month</div>
+            <div className="mt-0.5 text-[12px] text-[#6B736E]">per month</div>
           </div>
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#FFFFFF] text-[#0A0A0A] shadow-xs">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E2E7E4] bg-[#FFFFFF] text-[#0B0D0E] shadow-xs">
             <ArrowRight className="h-4 w-4" />
           </div>
 
           <div className="text-right">
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#15803D]">
+            <div className="font-mono text-[10.5px] uppercase tracking-[0.06em] text-[#047857]">
               After · open-ci Spot
             </div>
-            <div className="mt-1.5 font-mono text-[28px] font-semibold text-[#0A0A0A] tabular-nums sm:text-[34px]">
+            <div className="mt-1.5 font-mono text-[28px] font-semibold text-[#0B0D0E] tabular-nums sm:text-[34px]">
               $315
             </div>
-            <div className="mt-0.5 text-[12px] text-[#4B5563]">
+            <div className="mt-0.5 text-[12px] text-[#525A55]">
               per month (all-in)
             </div>
           </div>
@@ -310,15 +310,15 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
 
         {/* Hero Annual Savings Counter */}
         <div className="mt-6 text-center">
-          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B7280]">
+          <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#6B736E]">
             Back in your budget every year
           </div>
-          <div className="mt-1 font-sans text-[48px] leading-none font-semibold tracking-[-0.04em] text-[#15803D] sm:text-[58px]">
+          <div className="mt-1 font-sans text-[48px] leading-none font-semibold tracking-[-0.04em] text-[#047857] sm:text-[58px]">
             <AnimatedNumber
               value={payoffFactor > 0.05 ? 25020 : 18500}
               format={(n) => `$${Math.round(n).toLocaleString('en-US')}`}
             />
-            <span className="ml-1.5 text-[20px] font-normal tracking-normal text-[#4B5563]">
+            <span className="ml-1.5 text-[20px] font-normal tracking-normal text-[#525A55]">
               / yr saved
             </span>
           </div>
@@ -326,7 +326,7 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
       </div>
 
       {/* Three Quiet Value Badges */}
-      <div className="grid grid-cols-3 gap-2.5 border-t border-[#F1F2F4] pt-4">
+      <div className="grid grid-cols-3 gap-2.5 border-t border-[#F0F3F1] pt-4">
         {[
           'Burns AWS & GCP credits',
           'Zero per-seat fees',
@@ -334,9 +334,9 @@ function ChapterThreeVisual({ payoffFactor }: { payoffFactor: number }) {
         ].map((badge) => (
           <div
             key={badge}
-            className="flex items-center justify-center gap-1.5 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-2.5 py-2 text-center text-[11.5px] font-medium text-[#1F2937]"
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-[#E2E7E4] bg-[#FAFBFA] px-2.5 py-2 text-center text-[11.5px] font-medium text-[#1F2937]"
           >
-            <Check className="h-3.5 w-3.5 shrink-0 text-[#15803D]" />
+            <Check className="h-3.5 w-3.5 shrink-0 text-[#047857]" />
             <span>{badge}</span>
           </div>
         ))}
@@ -402,7 +402,7 @@ export function ScrollStory() {
     <section
       id="how-it-works"
       aria-label="How open-ci saves time and money"
-      className="relative border-t border-[#E5E7EB]"
+      className="relative border-t border-[#E2E7E4]"
     >
       {/* ================= DESKTOP STICKY CHOREOGRAPHY ================= */}
       <div ref={containerRef} className="relative hidden h-[270vh] md:block">
@@ -412,10 +412,10 @@ export function ScrollStory() {
             <div className="col-span-5 flex gap-6">
               {/* Vertical Progress Rail */}
               <div className="relative flex flex-col items-center pt-1">
-                <div className="relative h-[220px] w-[2px] overflow-hidden rounded-full bg-[#E5E7EB]">
+                <div className="relative h-[220px] w-[2px] overflow-hidden rounded-full bg-[#E2E7E4]">
                   <motion.div
                     style={{ scaleY: railScaleY }}
-                    className="h-full w-full origin-top rounded-full bg-[#0A0A0A]"
+                    className="h-full w-full origin-top rounded-full bg-[#0B0D0E]"
                   />
                 </div>
               </div>
@@ -433,8 +433,8 @@ export function ScrollStory() {
                         onClick={() => scrollToChapter(ch.targetProgress)}
                         className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] transition-all duration-200 cursor-pointer ${
                           isActive
-                            ? 'bg-[#0A0A0A] font-medium text-[#FFFFFF]'
-                            : 'bg-[#F1F2F4] text-[#6B7280] hover:bg-[#E5E7EB] hover:text-[#0A0A0A]'
+                            ? 'bg-[#0B0D0E] font-medium text-[#FFFFFF]'
+                            : 'bg-[#F0F3F1] text-[#6B736E] hover:bg-[#E2E7E4] hover:text-[#0B0D0E]'
                         }`}
                       >
                         <span>{ch.index}</span>
@@ -454,17 +454,17 @@ export function ScrollStory() {
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <h2 className="text-[32px] leading-[1.12] font-medium tracking-[-0.03em] text-[#0A0A0A] lg:text-[38px]">
+                      <h2 className="text-[32px] leading-[1.12] font-medium tracking-[-0.03em] text-[#0B0D0E] lg:text-[38px]">
                         {activeChapter.title}
                       </h2>
-                      <p className="mt-4 text-[16px] leading-[1.6] text-[#4B5563]">
+                      <p className="mt-4 text-[16px] leading-[1.6] text-[#525A55]">
                         {activeChapter.body}
                       </p>
                     </motion.div>
                   </AnimatePresence>
                 </div>
 
-                <div className="mt-4 font-mono text-[11px] text-[#9CA3AF]">
+                <div className="mt-4 font-mono text-[11px] text-[#9AA39E]">
                   {activeIndex < 2
                     ? 'Scroll to continue ↓'
                     : 'Run your own numbers below ↓'}
@@ -474,7 +474,7 @@ export function ScrollStory() {
 
             {/* Right Continuous Morphing Visual Canvas */}
             <div className="col-span-7">
-              <div className="studio-stage relative h-[480px] w-full overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-7 lg:p-8">
+              <div className="studio-stage relative h-[480px] w-full overflow-hidden rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF] p-7 lg:p-8">
                 <AnimatePresence mode="wait">
                   {activeIndex === 0 && (
                     <motion.div
@@ -533,17 +533,17 @@ export function ScrollStory() {
             className="space-y-5"
           >
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0A0A0A] px-2.5 py-0.5 font-mono text-[10.5px] text-white">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#0B0D0E] px-2.5 py-0.5 font-mono text-[10.5px] text-white">
                 {ch.index} · {ch.label}
               </span>
-              <h2 className="mt-3 text-[28px] leading-[1.15] font-medium tracking-[-0.03em] text-[#0A0A0A]">
+              <h2 className="mt-3 text-[28px] leading-[1.15] font-medium tracking-[-0.03em] text-[#0B0D0E]">
                 {ch.title}
               </h2>
-              <p className="mt-2.5 text-[15px] leading-[1.6] text-[#4B5563]">
+              <p className="mt-2.5 text-[15px] leading-[1.6] text-[#525A55]">
                 {ch.body}
               </p>
             </div>
-            <div className="studio-card min-h-[380px] rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-5">
+            <div className="studio-card min-h-[380px] rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF] p-5">
               {idx === 0 && <ChapterOneVisual riseFactor={1} />}
               {idx === 1 && <ChapterTwoVisual raceSeconds={MAX_BENCH_SEC} />}
               {idx === 2 && <ChapterThreeVisual payoffFactor={1} />}

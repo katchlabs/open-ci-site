@@ -12,7 +12,7 @@ const DocsPage = lazy(() =>
 function DocsFallback() {
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-[1160px] items-center justify-center px-5">
-      <div className="font-mono text-xs text-[#6B7280]">Loading documentation...</div>
+      <div className="font-mono text-xs text-[#6B736E]">Loading documentation...</div>
     </div>
   );
 }
@@ -39,7 +39,7 @@ function AppShell() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-white text-[#0A0A0A]">
+    <div className="relative flex min-h-screen flex-col bg-white text-[#0B0D0E]">
       <Navbar onOpenSearch={() => setSearchOpen(true)} />
       <div className="flex-1">
         <Suspense fallback={<DocsFallback />}>

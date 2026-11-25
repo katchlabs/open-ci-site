@@ -84,12 +84,12 @@ function CellValue({ value, isOpenCi = false }: { value: string; isOpenCi?: bool
     return (
       <span
         className={`inline-flex items-center gap-1.5 font-medium ${
-          isOpenCi ? 'text-[#15803D]' : 'text-[#4B5563]'
+          isOpenCi ? 'text-[#047857]' : 'text-[#525A55]'
         }`}
       >
         <Check
           className={`h-3.5 w-3.5 ${
-            isOpenCi ? 'text-[#16A34A] stroke-[2.5]' : 'text-[#6B7280]'
+            isOpenCi ? 'text-[#10B981] stroke-[2.5]' : 'text-[#6B736E]'
           }`}
         />
         <span>{value}</span>
@@ -98,14 +98,14 @@ function CellValue({ value, isOpenCi = false }: { value: string; isOpenCi?: bool
   }
   if (value === 'No' || value === 'N/A') {
     return (
-      <span className="inline-flex items-center gap-1 text-[#9CA3AF]">
+      <span className="inline-flex items-center gap-1 text-[#9AA39E]">
         <Minus className="h-3.5 w-3.5 opacity-60" />
         <span>{value}</span>
       </span>
     );
   }
   return (
-    <span className={isOpenCi ? 'font-medium text-[#0A0A0A]' : 'text-[#4B5563]'}>
+    <span className={isOpenCi ? 'font-medium text-[#0B0D0E]' : 'text-[#525A55]'}>
       {value}
     </span>
   );
@@ -140,18 +140,18 @@ function InteractiveFailoverDemo() {
       : 'Restore Spot regions';
 
   return (
-    <div className="studio-card overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 sm:p-8">
+    <div className="studio-card overflow-hidden rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF] p-6 sm:p-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0A0A0A]">
+            <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0B0D0E]">
               Zero failed builds
             </h3>
-            <span className="rounded-full border border-[#BBF7D0] bg-[#F0FDF4] px-2.5 py-0.5 font-mono text-[10.5px] font-medium text-[#15803D]">
+            <span className="rounded-full border border-[#A7F3D0] bg-[#ECFDF5] px-2.5 py-0.5 font-mono text-[10.5px] font-medium text-[#047857]">
               0 failed jobs
             </span>
           </div>
-          <p className="mt-1.5 max-w-[540px] text-[14.5px] leading-[1.55] text-[#4B5563]">
+          <p className="mt-1.5 max-w-[540px] text-[14.5px] leading-[1.55] text-[#525A55]">
             If Spot capacity dries up in one zone or cloud, jobs seamlessly
             reroute to your next cloud — or fall back to GitHub-hosted runners.
           </p>
@@ -162,8 +162,8 @@ function InteractiveFailoverDemo() {
           onClick={handleAction}
           className={`inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all duration-150 active:scale-[0.98] cursor-pointer ${
             outageLevel === 2
-              ? 'border border-[#D1D5DB] bg-[#FFFFFF] text-[#0A0A0A] hover:bg-[#F7F8FA]'
-              : 'bg-[#0A0A0A] text-[#FFFFFF] hover:bg-[#262624]'
+              ? 'border border-[#D3D9D5] bg-[#FFFFFF] text-[#0B0D0E] hover:bg-[#F7F9F8]'
+              : 'bg-[#0B0D0E] text-[#FFFFFF] hover:bg-[#262624]'
           }`}
         >
           {outageLevel === 2 ? (
@@ -176,21 +176,21 @@ function InteractiveFailoverDemo() {
       </div>
 
       {/* Animated SVG Routing Stage */}
-      <div className="mt-6 rounded-xl border border-[#F1F2F4] bg-[#F9FAFB] p-4 sm:p-6">
+      <div className="mt-6 rounded-xl border border-[#F0F3F1] bg-[#FAFBFA] p-4 sm:p-6">
         <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-12">
           {/* Source Node: GitHub Workflow */}
           <div className="md:col-span-3">
-            <div className="rounded-xl border border-[#D1D5DB] bg-[#FFFFFF] p-4 shadow-xs">
+            <div className="rounded-xl border border-[#D3D9D5] bg-[#FFFFFF] p-4 shadow-xs">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#0A0A0A]" />
-                <span className="text-[13px] font-medium text-[#0A0A0A]">
+                <span className="h-2 w-2 rounded-full bg-[#0B0D0E]" />
+                <span className="text-[13px] font-medium text-[#0B0D0E]">
                   GitHub Actions
                 </span>
               </div>
-              <div className="mt-1.5 font-mono text-[11px] text-[#6B7280]">
+              <div className="mt-1.5 font-mono text-[11px] text-[#6B736E]">
                 22 build jobs queued
               </div>
-              <div className="mt-2 inline-flex items-center gap-1 rounded bg-[#F0FDF4] px-2 py-0.5 font-mono text-[10px] font-medium text-[#15803D]">
+              <div className="mt-2 inline-flex items-center gap-1 rounded bg-[#ECFDF5] px-2 py-0.5 font-mono text-[10px] font-medium text-[#047857]">
                 <Check className="h-3 w-3" />
                 100% completion
               </div>
@@ -212,8 +212,8 @@ function InteractiveFailoverDemo() {
                   gcpDown
                     ? '#FCA5A5'
                     : activeRoute === 'gcp'
-                    ? '#16A34A'
-                    : '#E5E7EB'
+                    ? '#10B981'
+                    : '#E2E7E4'
                 }
                 strokeWidth={activeRoute === 'gcp' ? 2.5 : 1.5}
                 strokeDasharray={gcpDown ? '5 5' : undefined}
@@ -227,8 +227,8 @@ function InteractiveFailoverDemo() {
                   awsDown
                     ? '#FCA5A5'
                     : activeRoute === 'aws'
-                    ? '#16A34A'
-                    : '#E5E7EB'
+                    ? '#10B981'
+                    : '#E2E7E4'
                 }
                 strokeWidth={activeRoute === 'aws' ? 2.5 : 1.5}
                 strokeDasharray={awsDown ? '5 5' : undefined}
@@ -238,21 +238,21 @@ function InteractiveFailoverDemo() {
               <path
                 d="M 4 90 C 80 90, 120 150, 236 150"
                 fill="none"
-                stroke={activeRoute === 'github' ? '#0A0A0A' : '#E5E7EB'}
+                stroke={activeRoute === 'github' ? '#0B0D0E' : '#E2E7E4'}
                 strokeWidth={activeRoute === 'github' ? 2.5 : 1.5}
               />
 
               {/* Animated Flowing Packets on the active route */}
               {activeRoute === 'gcp' && (
                 <>
-                  <circle r="4.5" fill="#16A34A">
+                  <circle r="4.5" fill="#10B981">
                     <animateMotion
                       dur="1.5s"
                       repeatCount="indefinite"
                       path="M 4 90 C 80 90, 120 30, 236 30"
                     />
                   </circle>
-                  <circle r="4.5" fill="#16A34A" opacity="0.55">
+                  <circle r="4.5" fill="#10B981" opacity="0.55">
                     <animateMotion
                       dur="1.5s"
                       begin="0.75s"
@@ -265,14 +265,14 @@ function InteractiveFailoverDemo() {
 
               {activeRoute === 'aws' && (
                 <>
-                  <circle r="4.5" fill="#16A34A">
+                  <circle r="4.5" fill="#10B981">
                     <animateMotion
                       dur="1.35s"
                       repeatCount="indefinite"
                       path="M 4 90 C 80 90, 140 90, 236 90"
                     />
                   </circle>
-                  <circle r="4.5" fill="#16A34A" opacity="0.55">
+                  <circle r="4.5" fill="#10B981" opacity="0.55">
                     <animateMotion
                       dur="1.35s"
                       begin="0.67s"
@@ -285,14 +285,14 @@ function InteractiveFailoverDemo() {
 
               {activeRoute === 'github' && (
                 <>
-                  <circle r="4.5" fill="#0A0A0A">
+                  <circle r="4.5" fill="#0B0D0E">
                     <animateMotion
                       dur="1.5s"
                       repeatCount="indefinite"
                       path="M 4 90 C 80 90, 120 150, 236 150"
                     />
                   </circle>
-                  <circle r="4.5" fill="#0A0A0A" opacity="0.5">
+                  <circle r="4.5" fill="#0B0D0E" opacity="0.5">
                     <animateMotion
                       dur="1.5s"
                       begin="0.75s"
@@ -313,8 +313,8 @@ function InteractiveFailoverDemo() {
                 gcpDown
                   ? 'border-[#FECACA] bg-[#FEF2F2]'
                   : activeRoute === 'gcp'
-                  ? 'border-[#86EFAC] bg-[#FFFFFF] shadow-xs'
-                  : 'border-[#E5E7EB] bg-[#FFFFFF]/70'
+                  ? 'border-[#6EE7B7] bg-[#FFFFFF] shadow-xs'
+                  : 'border-[#E2E7E4] bg-[#FFFFFF]/70'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -323,15 +323,15 @@ function InteractiveFailoverDemo() {
                     gcpDown
                       ? 'bg-[#DC2626]'
                       : activeRoute === 'gcp'
-                      ? 'bg-[#16A34A]'
-                      : 'bg-[#CBD0D8]'
+                      ? 'bg-[#10B981]'
+                      : 'bg-[#CDD4CF]'
                   }`}
                 />
                 <div>
-                  <div className="text-[13px] font-medium text-[#0A0A0A]">
+                  <div className="text-[13px] font-medium text-[#0B0D0E]">
                     GCP Spot · us-central1
                   </div>
-                  <div className="font-mono text-[10.5px] text-[#6B7280]">
+                  <div className="font-mono text-[10.5px] text-[#6B736E]">
                     $0.0012/min · Primary
                   </div>
                 </div>
@@ -340,7 +340,7 @@ function InteractiveFailoverDemo() {
                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-medium ${
                   gcpDown
                     ? 'bg-[#FEE2E2] text-[#DC2626]'
-                    : 'bg-[#F0FDF4] text-[#15803D]'
+                    : 'bg-[#ECFDF5] text-[#047857]'
                 }`}
               >
                 {gcpDown ? 'Interrupted' : 'Active'}
@@ -353,8 +353,8 @@ function InteractiveFailoverDemo() {
                 awsDown
                   ? 'border-[#FECACA] bg-[#FEF2F2]'
                   : activeRoute === 'aws'
-                  ? 'border-[#86EFAC] bg-[#FFFFFF] shadow-xs'
-                  : 'border-[#E5E7EB] bg-[#FFFFFF]/70'
+                  ? 'border-[#6EE7B7] bg-[#FFFFFF] shadow-xs'
+                  : 'border-[#E2E7E4] bg-[#FFFFFF]/70'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -363,15 +363,15 @@ function InteractiveFailoverDemo() {
                     awsDown
                       ? 'bg-[#DC2626]'
                       : activeRoute === 'aws'
-                      ? 'bg-[#16A34A]'
-                      : 'bg-[#CBD0D8]'
+                      ? 'bg-[#10B981]'
+                      : 'bg-[#CDD4CF]'
                   }`}
                 />
                 <div>
-                  <div className="text-[13px] font-medium text-[#0A0A0A]">
+                  <div className="text-[13px] font-medium text-[#0B0D0E]">
                     AWS Spot · us-east-1
                   </div>
-                  <div className="font-mono text-[10.5px] text-[#6B7280]">
+                  <div className="font-mono text-[10.5px] text-[#6B736E]">
                     $0.0014/min · Secondary
                   </div>
                 </div>
@@ -381,8 +381,8 @@ function InteractiveFailoverDemo() {
                   awsDown
                     ? 'bg-[#FEE2E2] text-[#DC2626]'
                     : activeRoute === 'aws'
-                    ? 'bg-[#F0FDF4] text-[#15803D]'
-                    : 'bg-[#F1F2F4] text-[#6B7280]'
+                    ? 'bg-[#ECFDF5] text-[#047857]'
+                    : 'bg-[#F0F3F1] text-[#6B736E]'
                 }`}
               >
                 {awsDown ? 'Interrupted' : activeRoute === 'aws' ? 'Active' : 'Standby'}
@@ -393,21 +393,21 @@ function InteractiveFailoverDemo() {
             <div
               className={`flex items-center justify-between rounded-xl border px-4 py-3 transition-all duration-200 ${
                 activeRoute === 'github'
-                  ? 'border-[#0A0A0A] bg-[#FFFFFF] shadow-xs'
-                  : 'border-[#E5E7EB] bg-[#FFFFFF]/70'
+                  ? 'border-[#0B0D0E] bg-[#FFFFFF] shadow-xs'
+                  : 'border-[#E2E7E4] bg-[#FFFFFF]/70'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <span
                   className={`h-2 w-2 rounded-full ${
-                    activeRoute === 'github' ? 'bg-[#0A0A0A]' : 'bg-[#CBD0D8]'
+                    activeRoute === 'github' ? 'bg-[#0B0D0E]' : 'bg-[#CDD4CF]'
                   }`}
                 />
                 <div>
-                  <div className="text-[13px] font-medium text-[#0A0A0A]">
+                  <div className="text-[13px] font-medium text-[#0B0D0E]">
                     GitHub-Hosted Fallback
                   </div>
-                  <div className="font-mono text-[10.5px] text-[#6B7280]">
+                  <div className="font-mono text-[10.5px] text-[#6B736E]">
                     Safety net · Zero downtime
                   </div>
                 </div>
@@ -415,8 +415,8 @@ function InteractiveFailoverDemo() {
               <span
                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-medium ${
                   activeRoute === 'github'
-                    ? 'bg-[#0A0A0A] text-[#FFFFFF]'
-                    : 'bg-[#F1F2F4] text-[#6B7280]'
+                    ? 'bg-[#0B0D0E] text-[#FFFFFF]'
+                    : 'bg-[#F0F3F1] text-[#6B736E]'
                 }`}
               >
                 {activeRoute === 'github' ? 'Active' : 'Ready'}
@@ -426,12 +426,12 @@ function InteractiveFailoverDemo() {
         </div>
 
         {/* Live Status Bar */}
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-[#E5E7EB] pt-3.5 font-mono text-[11.5px]">
-          <span className="flex items-center gap-2 text-[#0A0A0A]">
-            <Zap className="h-3.5 w-3.5 text-[#15803D]" />
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-[#E2E7E4] pt-3.5 font-mono text-[11.5px]">
+          <span className="flex items-center gap-2 text-[#0B0D0E]">
+            <Zap className="h-3.5 w-3.5 text-[#047857]" />
             {statusMessage}
           </span>
-          <span className="text-[#15803D]">Build queue healthy</span>
+          <span className="text-[#047857]">Build queue healthy</span>
         </div>
       </div>
     </div>
@@ -443,15 +443,15 @@ function InteractiveDiffDemo() {
   const [mode, setMode] = useState<'dropin' | 'fallback'>('dropin');
 
   return (
-    <div className="studio-card flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 sm:p-7">
+    <div className="studio-card flex flex-col justify-between rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF] p-6 sm:p-7">
       <div>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0A0A0A]">
+          <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0B0D0E]">
             Switch in one line
           </h3>
 
           {/* Morphing Toggle */}
-          <div className="inline-flex rounded-lg border border-[#E5E7EB] bg-[#F7F8FA] p-0.5">
+          <div className="inline-flex rounded-lg border border-[#E2E7E4] bg-[#F7F9F8] p-0.5">
             {(
               [
                 { id: 'dropin', label: '1-line drop-in' },
@@ -465,14 +465,14 @@ function InteractiveDiffDemo() {
                   type="button"
                   onClick={() => setMode(tab.id)}
                   className={`relative rounded-md px-2.5 py-1 text-[11.5px] font-medium transition-colors cursor-pointer ${
-                    active ? 'text-[#0A0A0A]' : 'text-[#6B7280] hover:text-[#0A0A0A]'
+                    active ? 'text-[#0B0D0E]' : 'text-[#6B736E] hover:text-[#0B0D0E]'
                   }`}
                 >
                   {active && (
                     <motion.span
                       layoutId="workflow-diff-tab"
                       transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                      className="absolute inset-0 rounded-md border border-[#E5E7EB] bg-[#FFFFFF] shadow-xs"
+                      className="absolute inset-0 rounded-md border border-[#E2E7E4] bg-[#FFFFFF] shadow-xs"
                     />
                   )}
                   <span className="relative z-10">{tab.label}</span>
@@ -482,9 +482,9 @@ function InteractiveDiffDemo() {
           </div>
         </div>
 
-        <p className="mt-2 text-[14px] leading-[1.55] text-[#4B5563]">
+        <p className="mt-2 text-[14px] leading-[1.55] text-[#525A55]">
           Keep your existing workflows, secrets, and{' '}
-          <code className="rounded bg-[#F1F2F4] px-1.5 py-0.5 text-[12.5px] text-[#0A0A0A]">
+          <code className="rounded bg-[#F0F3F1] px-1.5 py-0.5 text-[12.5px] text-[#0B0D0E]">
             actions/cache
           </code>
           . Only the runner line changes.
@@ -495,7 +495,7 @@ function InteractiveDiffDemo() {
       <div className="mt-5 overflow-hidden rounded-xl border border-[#262624] bg-[#141413] font-mono text-[12px] leading-[1.7] text-[#E8E8E3]">
         <div className="flex items-center justify-between border-b border-[#242422] px-4 py-2 text-[11px] text-[#8E8E86]">
           <span>.github/workflows/ci.yml</span>
-          <span className="text-[#4ADE80]">
+          <span className="text-[#34D399]">
             {mode === 'dropin' ? '1 line changed' : 'automatic safety net'}
           </span>
         </div>
@@ -518,8 +518,8 @@ function InteractiveDiffDemo() {
                   <span className="mr-2 select-none text-[#F87171]">-</span>
                   {'    runs-on: ubuntu-latest'}
                 </div>
-                <div className="-mx-4 border-l-2 border-[#22C55E] bg-[#143321]/75 px-4 text-[#86EFAC]">
-                  <span className="mr-2 select-none text-[#4ADE80]">+</span>
+                <div className="-mx-4 border-l-2 border-[#10B981] bg-[#143321]/75 px-4 text-[#6EE7B7]">
+                  <span className="mr-2 select-none text-[#34D399]">+</span>
                   {'    runs-on: open-ci-linux-x64'}
                 </div>
               </motion.div>
@@ -532,12 +532,12 @@ function InteractiveDiffDemo() {
                 transition={{ duration: 0.2 }}
                 className="my-1"
               >
-                <div className="-mx-4 border-l-2 border-[#22C55E] bg-[#143321]/75 px-4 text-[#86EFAC]">
-                  <span className="mr-2 select-none text-[#4ADE80]">+</span>
+                <div className="-mx-4 border-l-2 border-[#10B981] bg-[#143321]/75 px-4 text-[#6EE7B7]">
+                  <span className="mr-2 select-none text-[#34D399]">+</span>
                   {'    needs: route'}
                 </div>
-                <div className="-mx-4 border-l-2 border-[#22C55E] bg-[#143321]/75 px-4 text-[#86EFAC]">
-                  <span className="mr-2 select-none text-[#4ADE80]">+</span>
+                <div className="-mx-4 border-l-2 border-[#10B981] bg-[#143321]/75 px-4 text-[#6EE7B7]">
+                  <span className="mr-2 select-none text-[#34D399]">+</span>
                   {'    runs-on: ${{ needs.route.outputs.runner }}'}
                 </div>
               </motion.div>
@@ -547,11 +547,11 @@ function InteractiveDiffDemo() {
           <div className="mt-1 pl-6 text-[#A1A19A]">steps:</div>
           <div className="flex items-center justify-between pl-9 text-[#D4D4CE]">
             <span>- uses: actions/checkout@v4</span>
-            <span className="text-[10px] text-[#6B7280]">unchanged</span>
+            <span className="text-[10px] text-[#6B736E]">unchanged</span>
           </div>
           <div className="flex items-center justify-between pl-9 text-[#D4D4CE]">
             <span>- uses: actions/cache@v4</span>
-            <span className="text-[10px] text-[#4ADE80]">instant NVMe</span>
+            <span className="text-[10px] text-[#34D399]">instant NVMe</span>
           </div>
           <div className="pl-9 text-[#D4D4CE]">- run: npm test</div>
         </div>
@@ -598,16 +598,16 @@ function InteractiveLifecycleDemo() {
     <div
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="studio-card flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 sm:p-7"
+      className="studio-card flex flex-col justify-between rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF] p-6 sm:p-7"
     >
       <div>
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0A0A0A]">
+          <h3 className="text-[20px] font-medium tracking-[-0.02em] text-[#0B0D0E]">
             Ephemeral &amp; private by default
           </h3>
-          <ShieldCheck className="h-5 w-5 text-[#15803D]" />
+          <ShieldCheck className="h-5 w-5 text-[#047857]" />
         </div>
-        <p className="mt-2 text-[14px] leading-[1.55] text-[#4B5563]">
+        <p className="mt-2 text-[14px] leading-[1.55] text-[#525A55]">
           Your source code never leaves your cloud account. Every build gets a
           single-use VM that vanishes when finished.
         </p>
@@ -627,8 +627,8 @@ function InteractiveLifecycleDemo() {
               }}
               className={`relative w-full overflow-hidden rounded-xl border p-3.5 text-left transition-all duration-200 cursor-pointer ${
                 active
-                  ? 'border-[#0A0A0A] bg-[#F9FAFB]'
-                  : 'border-[#F1F2F4] bg-[#FFFFFF] hover:border-[#D1D5DB]'
+                  ? 'border-[#0B0D0E] bg-[#FAFBFA]'
+                  : 'border-[#F0F3F1] bg-[#FFFFFF] hover:border-[#D3D9D5]'
               }`}
             >
               <div className="flex items-center justify-between gap-2">
@@ -636,15 +636,15 @@ function InteractiveLifecycleDemo() {
                   <span
                     className={`flex h-6 w-6 items-center justify-center rounded-md font-mono text-[11px] font-medium ${
                       active
-                        ? 'bg-[#0A0A0A] text-[#FFFFFF]'
-                        : 'bg-[#F1F2F4] text-[#6B7280]'
+                        ? 'bg-[#0B0D0E] text-[#FFFFFF]'
+                        : 'bg-[#F0F3F1] text-[#6B736E]'
                     }`}
                   >
                     {step.num}
                   </span>
                   <span
                     className={`text-[13.5px] font-medium ${
-                      active ? 'text-[#0A0A0A]' : 'text-[#4B5563]'
+                      active ? 'text-[#0B0D0E]' : 'text-[#525A55]'
                     }`}
                   >
                     {step.title}
@@ -653,14 +653,14 @@ function InteractiveLifecycleDemo() {
                 <span
                   className={`rounded-full px-2 py-0.5 font-mono text-[10px] ${
                     active
-                      ? 'bg-[#F0FDF4] font-medium text-[#15803D]'
-                      : 'bg-[#F3F4F6] text-[#6B7280]'
+                      ? 'bg-[#ECFDF5] font-medium text-[#047857]'
+                      : 'bg-[#F3F4F6] text-[#6B736E]'
                   }`}
                 >
                   {step.tag}
                 </span>
               </div>
-              <p className="mt-1.5 pl-8.5 text-[12.5px] leading-[1.45] text-[#6B7280]">
+              <p className="mt-1.5 pl-8.5 text-[12.5px] leading-[1.45] text-[#6B736E]">
                 {step.detail}
               </p>
             </button>
@@ -668,8 +668,8 @@ function InteractiveLifecycleDemo() {
         })}
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-[#F1F2F4] pt-3.5 font-mono text-[11px] text-[#6B7280]">
-        <span className="font-medium text-[#15803D]">
+      <div className="mt-4 flex items-center justify-between border-t border-[#F0F3F1] pt-3.5 font-mono text-[11px] text-[#6B736E]">
+        <span className="font-medium text-[#047857]">
           0 leaked VMs · 0 shared state
         </span>
         <span>100% inside your VPC</span>
@@ -682,7 +682,7 @@ export function ProviderComparison() {
   return (
     <section
       id="compare"
-      className="border-t border-[#E5E7EB] px-5 py-20 sm:px-8 sm:py-28"
+      className="border-t border-[#E2E7E4] px-5 py-20 sm:px-8 sm:py-28"
     >
       <div className="mx-auto max-w-[1120px]">
         {/* Part A: Side-by-Side Comparison Matrix */}
@@ -692,10 +692,10 @@ export function ProviderComparison() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
-          <h2 className="max-w-[660px] text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-[#0A0A0A] sm:text-[44px]">
+          <h2 className="max-w-[660px] text-[34px] leading-[1.1] font-medium tracking-[-0.035em] text-[#0B0D0E] sm:text-[44px]">
             Raw cloud economics. Without the Kubernetes tax.
           </h2>
-          <p className="mt-3 max-w-[560px] text-[16px] leading-[1.55] text-[#4B5563]">
+          <p className="mt-3 max-w-[560px] text-[16px] leading-[1.55] text-[#525A55]">
             Hosted runners charge 8× markup. Managed SaaS locks you into their
             network. DIY Kubernetes costs an engineering team to maintain.
           </p>
@@ -706,32 +706,32 @@ export function ProviderComparison() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="studio-stage mt-9 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#FFFFFF]"
+          className="studio-stage mt-9 overflow-hidden rounded-2xl border border-[#E2E7E4] bg-[#FFFFFF]"
         >
           <div className="overflow-x-auto">
             <table className="w-full min-w-[700px] border-collapse text-left text-[13.5px]">
               <thead>
-                <tr className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
-                  <th className="w-[26%] px-6 py-4 font-mono text-[11px] font-medium uppercase tracking-[0.07em] text-[#6B7280]">
+                <tr className="border-b border-[#E2E7E4] bg-[#FAFBFA]">
+                  <th className="w-[26%] px-6 py-4 font-mono text-[11px] font-medium uppercase tracking-[0.07em] text-[#6B736E]">
                     Capability
                   </th>
-                  <th className="w-[22%] border-x border-[#E5E7EB] bg-[#FFFFFF] px-6 py-4">
+                  <th className="w-[22%] border-x border-[#E2E7E4] bg-[#FFFFFF] px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-[14.5px] font-semibold text-[#0A0A0A]">
+                      <span className="text-[14.5px] font-semibold text-[#0B0D0E]">
                         open-ci
                       </span>
-                      <span className="rounded-full bg-[#F0FDF4] px-2 py-0.5 font-mono text-[10px] font-medium text-[#15803D]">
+                      <span className="rounded-full bg-[#ECFDF5] px-2 py-0.5 font-mono text-[10px] font-medium text-[#047857]">
                         Your cloud
                       </span>
                     </div>
                   </th>
-                  <th className="w-[17%] px-5 py-4 font-medium text-[#4B5563]">
+                  <th className="w-[17%] px-5 py-4 font-medium text-[#525A55]">
                     GitHub-Hosted
                   </th>
-                  <th className="w-[18%] px-5 py-4 font-medium text-[#4B5563]">
+                  <th className="w-[18%] px-5 py-4 font-medium text-[#525A55]">
                     Managed SaaS
                   </th>
-                  <th className="w-[17%] px-5 py-4 font-medium text-[#4B5563]">
+                  <th className="w-[17%] px-5 py-4 font-medium text-[#525A55]">
                     Kubernetes ARC
                   </th>
                 </tr>
@@ -740,18 +740,18 @@ export function ProviderComparison() {
                 {COMPARISON_ROWS.map((row) => (
                   <tr
                     key={row.feature}
-                    className="transition-colors hover:bg-[#F9FAFB]/60"
+                    className="transition-colors hover:bg-[#FAFBFA]/60"
                   >
                     <td className="px-6 py-3.5 font-medium text-[#1F2937]">
                       {row.feature}
                     </td>
                     <td
-                      className={`border-x border-[#E5E7EB] bg-[#FFFFFF] px-6 py-3.5 ${
-                        row.highlightOpenCi ? 'font-mono text-[#15803D]' : ''
+                      className={`border-x border-[#E2E7E4] bg-[#FFFFFF] px-6 py-3.5 ${
+                        row.highlightOpenCi ? 'font-mono text-[#047857]' : ''
                       }`}
                     >
                       {row.highlightOpenCi ? (
-                        <span className="font-semibold text-[#15803D]">
+                        <span className="font-semibold text-[#047857]">
                           {row.openCi}
                         </span>
                       ) : (

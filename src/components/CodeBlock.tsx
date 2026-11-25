@@ -15,7 +15,7 @@ function highlightLine(line: string, lang: string): ReactNode {
   const trimmed = line.trimStart();
 
   if (trimmed.startsWith('#') || (lang === 'sql' && trimmed.startsWith('--'))) {
-    return <span className="text-[#9CA3AF]">{line}</span>;
+    return <span className="text-[#9AA39E]">{line}</span>;
   }
 
   if ((lang === 'toml' || lang === 'ini') && /^\[+[^\]]+\]+/.test(trimmed)) {
@@ -28,9 +28,9 @@ function highlightLine(line: string, lang: string): ReactNode {
       const [, indent, key, colon, space, rest] = match;
       return (
         <>
-          <span className="text-[#9CA3AF]">{indent}</span>
-          <span className="text-[#F7F8FA]">{key}</span>
-          <span className="text-[#9CA3AF]">{colon}</span>
+          <span className="text-[#9AA39E]">{indent}</span>
+          <span className="text-[#F7F9F8]">{key}</span>
+          <span className="text-[#9AA39E]">{colon}</span>
           {space}
           {highlightValue(rest)}
         </>
@@ -45,8 +45,8 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#F7F8FA]">{key}</span>
-          <span className="text-[#9CA3AF]">{eq}</span>
+          <span className="text-[#F7F9F8]">{key}</span>
+          <span className="text-[#9AA39E]">{eq}</span>
           {highlightValue(rest)}
         </>
       );
@@ -60,8 +60,8 @@ function highlightLine(line: string, lang: string): ReactNode {
       return (
         <>
           {indent}
-          <span className="text-[#F7F8FA]">{key}</span>
-          <span className="text-[#9CA3AF]">{colon}</span>
+          <span className="text-[#F7F9F8]">{key}</span>
+          <span className="text-[#9AA39E]">{colon}</span>
           {highlightValue(rest)}
         </>
       );
@@ -76,7 +76,7 @@ function highlightLine(line: string, lang: string): ReactNode {
           {part}
         </span>
       ) : (
-        <span key={i} className="text-[#E5E7EB]">
+        <span key={i} className="text-[#E2E7E4]">
           {part}
         </span>
       )
@@ -115,14 +115,14 @@ function highlightLine(line: string, lang: string): ReactNode {
                 return (
                   <span key={j}>
                     {cmdMatch[1]}
-                    <span className="text-[#F7F8FA]">{cmdMatch[2]}</span>
-                    <span className="text-[#D1D5DB]">{cmdMatch[3]}</span>
+                    <span className="text-[#F7F9F8]">{cmdMatch[2]}</span>
+                    <span className="text-[#D3D9D5]">{cmdMatch[3]}</span>
                   </span>
                 );
               }
             }
             return (
-              <span key={j} className="text-[#D1D5DB]">
+              <span key={j} className="text-[#D3D9D5]">
                 {sp}
               </span>
             );
@@ -132,7 +132,7 @@ function highlightLine(line: string, lang: string): ReactNode {
     });
   }
 
-  return <span className="text-[#E5E7EB]">{line}</span>;
+  return <span className="text-[#E2E7E4]">{line}</span>;
 }
 
 function highlightValue(val: string): ReactNode {
@@ -157,7 +157,7 @@ function highlightValue(val: string): ReactNode {
   return (
     <>
       {rendered}
-      {comment && <span className="text-[#9CA3AF]">{comment}</span>}
+      {comment && <span className="text-[#9AA39E]">{comment}</span>}
     </>
   );
 }
@@ -198,17 +198,17 @@ export function CodeBlock({
 
   return (
     <div
-      className={`overflow-hidden rounded-lg border border-[#262624] bg-[#141413] text-[#F7F8FA] ${className}`}
+      className={`overflow-hidden rounded-lg border border-[#1F2422] bg-[#0B0D0E] text-[#F7F9F8] ${className}`}
     >
       {!compact && (
-        <div className="flex items-center justify-between border-b border-[#262624] px-4 py-2.5">
-          <span className="font-mono text-[11px] text-[#9CA3AF]">
+        <div className="flex items-center justify-between border-b border-[#1F2422] px-4 py-2.5">
+          <span className="font-mono text-[11px] text-[#9AA39E]">
             {filename ?? lang}
           </span>
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-0.5 font-mono text-[11px] text-[#C5CAD3] transition-colors duration-150 hover:border-[#374151] hover:text-[#F7F8FA] active:scale-[0.98] cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded border border-[#2A302E] bg-[#151918] px-2 py-0.5 font-mono text-[11px] text-[#C5CAD3] transition-colors duration-150 hover:border-[#3A423D] hover:text-[#F7F9F8] active:scale-[0.98] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
@@ -231,7 +231,7 @@ export function CodeBlock({
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded border border-[#2E2E2B] bg-[#1C1C1A] px-2 py-1 font-mono text-[11px] text-[#C5CAD3] transition-colors hover:text-[#F7F8FA] cursor-pointer"
+            className="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded border border-[#2A302E] bg-[#151918] px-2 py-1 font-mono text-[11px] text-[#C5CAD3] transition-colors hover:text-[#F7F9F8] cursor-pointer"
             aria-label="Copy code to clipboard"
           >
             {copied ? (
@@ -253,7 +253,7 @@ export function CodeBlock({
               const diff = diffHighlights?.[lineNo];
               const rowClass =
                 diff === 'add'
-                  ? 'bg-[#15803D]/18 border-l-2 border-[#4ADE80]'
+                  ? 'bg-[#047857]/18 border-l-2 border-[#34D399]'
                   : diff === 'remove'
                     ? 'bg-[#DC2626]/14 border-l-2 border-[#F87171] opacity-65'
                     : 'border-l-2 border-transparent';
@@ -272,7 +272,7 @@ export function CodeBlock({
                     <span
                       className={`mr-2 inline-block w-3 shrink-0 select-none text-center ${
                         diff === 'add'
-                          ? 'text-[#4ADE80]'
+                          ? 'text-[#34D399]'
                           : diff === 'remove'
                             ? 'text-[#F87171]'
                             : 'text-transparent'

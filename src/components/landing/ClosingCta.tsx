@@ -20,7 +20,7 @@ export function ClosingCta() {
   };
 
   return (
-    <section className="bg-[#0A0A0A] px-5 py-24 text-[#FFFFFF] sm:px-8 sm:py-32">
+    <section className="bg-[#0B0D0E] px-5 py-24 text-[#FFFFFF] sm:px-8 sm:py-32">
       <div className="mx-auto max-w-[820px] text-center">
         <motion.h2
           initial={{ opacity: 0, y: 18 }}
@@ -31,7 +31,7 @@ export function ClosingCta() {
         >
           Keep your workflows. Keep your cloud.
           <br />
-          <span className="text-[#4ADE80]">Cut your CI bill by 87%.</span>
+          <span className="text-[#34D399]">Cut your CI bill by 87%.</span>
         </motion.h2>
 
         <motion.p
@@ -39,7 +39,7 @@ export function ClosingCta() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto mt-5 max-w-[520px] text-[16px] leading-[1.6] text-[#A1A19A]"
+          className="mx-auto mt-5 max-w-[520px] text-[16px] leading-[1.6] text-[#9AA39E]"
         >
           Try it locally in 30 seconds — no AWS or GCP account required. Or
           deploy to your own cloud in under 5 minutes.
@@ -53,10 +53,10 @@ export function ClosingCta() {
           transition={{ duration: 0.5, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto mt-9 max-w-[680px]"
         >
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-[#2B2B28] bg-[#1C1C1A] px-4 py-3 text-left">
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-[#262C2A] bg-[#151918] px-4 py-3 text-left">
             <div className="flex min-w-0 items-center gap-3 overflow-x-auto">
-              <Terminal className="h-4 w-4 shrink-0 text-[#6B7280]" />
-              <code className="font-mono text-[12.5px] text-[#E8EAEE] whitespace-nowrap sm:text-[13px]">
+              <Terminal className="h-4 w-4 shrink-0 text-[#6B736E]" />
+              <code className="font-mono text-[12.5px] text-[#E6EBE8] whitespace-nowrap sm:text-[13px]">
                 {DEMO_COMMAND}
               </code>
             </div>
@@ -65,8 +65,8 @@ export function ClosingCta() {
               onClick={handleCopy}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-[11.5px] transition-all duration-150 cursor-pointer ${
                 copied
-                  ? 'border-[#22C55E]/40 bg-[#143321] text-[#4ADE80]'
-                  : 'border-[#33332F] bg-[#252522] text-[#D1D5DB] hover:border-[#4B5563] hover:text-[#FFFFFF]'
+                  ? 'border-[#10B981]/40 bg-[#143321] text-[#34D399]'
+                  : 'border-[#2F3633] bg-[#1F2422] text-[#D3D9D5] hover:border-[#525A55] hover:text-[#FFFFFF]'
               }`}
               aria-label="Copy demo command"
             >
@@ -97,7 +97,7 @@ export function ClosingCta() {
             href="https://github.com/katchlabs/open-ci"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg bg-[#FFFFFF] px-5 text-[14px] font-medium text-[#0A0A0A] transition-all duration-150 hover:bg-[#E8EAEE] active:scale-[0.98]"
+            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl bg-[#FFFFFF] px-5 text-[14px] font-medium text-[#0B0D0E] transition-all duration-150 hover:bg-[#E6EBE8] active:scale-[0.98]"
           >
             <span>Star on GitHub</span>
             <ArrowUpRight className="h-4 w-4" />
@@ -105,10 +105,10 @@ export function ClosingCta() {
 
           <Link
             to="/docs/quickstart"
-            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg border border-[#32322E] bg-transparent px-5 text-[14px] font-medium text-[#FFFFFF] transition-all duration-150 hover:border-[#4D4D47] hover:bg-[#1C1C1A] active:scale-[0.98]"
+            className="inline-flex h-11 items-center justify-center gap-1.5 rounded-xl border border-[#2E3532] bg-transparent px-5 text-[14px] font-medium text-[#FFFFFF] transition-all duration-150 hover:border-[#4A524E] hover:bg-[#151918] active:scale-[0.98]"
           >
             <span>Read quickstart</span>
-            <ArrowRight className="h-4 w-4 text-[#A1A19A]" />
+            <ArrowRight className="h-4 w-4 text-[#9AA39E]" />
           </Link>
         </motion.div>
       </div>

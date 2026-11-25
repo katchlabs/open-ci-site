@@ -1,23 +1,32 @@
 # open-ci Design System
 
-Editorial light-mode industrial spec sheet built around warm bone paper, architectural hairlines, restrained typography, and concrete engineering evidence.
+Luminous pure-white canvas, crisp Obsidian ink, and a CI Emerald signature that reads as "build passed, money saved". Inspired by airy developer-tool marketing, but every signature (palette, edge animation, hero deck, mark) is open-ci's own.
 
-## Palette ("Bone Canvas" + Architectural Ink)
+## Palette (Obsidian + CI Emerald)
 
 | Token | Hex | Usage |
 | --- | --- | --- |
-| `--color-bone` | `#F5F5F2` | Page canvas, navigation chrome, recessed reading frame |
-| `--color-paper` | `#FFFFFF` | Primary instrument sheets, ledgers, spec tables, doc reading pane |
-| `--color-recessed` | `#ECECE7` | Segmented control wells, hover fills, muted bar tracks |
-| `--color-hairline` | `#E4E4DF` | All structural `1px` borders and table rules |
-| `--color-hairline-strong` | `#D2D2CA` | Interactive border hover states |
-| `--color-ink` | `#111111` | Primary headlines, solid primary CTA, active bar fills, strokes |
-| `--color-ink-secondary` | `#555550` | Body prose and technical explanations |
-| `--color-ink-muted` | `#6E6E67` | Sheet indices (`01 / SAVINGS`), mono labels, secondary units (WCAG AA compliant) |
-| `--color-signal-emerald` | `#15803D` | Verified savings numbers, speedup deltas, pass indicators |
-| `--color-signal-dot` | `#16A34A` | Live control-plane status dot |
-| `--color-signal-crimson` | `#DC2626` | Spot stockout backoff state only |
-| `--color-code-bg` | `#141413` | High-contrast dark ink reserved strictly for code slabs |
+| `--color-canvas` | `#FFFFFF` | Page canvas, cards, Live Runner Deck |
+| `--color-surface` | `#F7F9F8` | Cool-porcelain bands, segmented wells, chips |
+| `--color-hairline` | `#E2E7E4` | Structural `1px` borders (`#ECEFEA` for chrome dividers) |
+| `--color-hairline-strong` | `#D3D9D5` | Interactive border hover states |
+| `--color-ink` | `#0B0D0E` | Headlines, solid primary CTA, active tab pill, code slabs |
+| `--color-ink-secondary` | `#525A55` | Body prose, subheads |
+| `--color-ink-muted` | `#6B736E` | Mono labels, units, secondary metadata (WCAG AA) |
+| `--color-emerald` | `#059669` | Signature brand color: headline accent, slider thumb, `$` prompt |
+| `--color-emerald-bright` | `#10B981` | Live pulse dots, running/complete bars, logo spark |
+| `--color-emerald-ink` | `#047857` | Emerald text on tints (savings badges, pass states) |
+| `--color-emerald-tint` / `-border` | `#ECFDF5` / `#A7F3D0` | Win badges and callouts |
+| `--color-signal-amber` | `#F59E0B` | Spot preemption / burst moments only, used sparingly |
+| `--color-signal-crimson` | `#DC2626` | Removed diff lines, stockout states only |
+
+No cobalt/blue anywhere in the brand.
+
+## Signatures
+
+- **Logo:** two parallel runner chevrons (white + emerald) in a `#0B0D0E` rounded square with an emerald status spark.
+- **Ephemeral Compute Rails** (`HeroPerimeterCanvas`): hairline build lanes on the outer ~23% of each hero edge; emerald runner capsules boot, fill, check, and dissolve; amber preemption arcs hand work to an adjacent rail. The center stays pure white.
+- **Live Runner Deck** (`HeroPlayground`): white `rounded-2xl` window, emerald top hairline, porcelain chrome bar with a live dot and an obsidian segmented tab pill.
 
 ## Typography
 
@@ -31,7 +40,7 @@ Editorial light-mode industrial spec sheet built around warm bone paper, archite
 
 - Centered `1160px` container (`max-w-[1160px]`) on a 12-column architectural grid.
 - Toggle the 12-column hairline blueprint overlay from the navbar grid control or by pressing `G`.
-- Strict radius discipline: `8px` (`rounded-lg`) for outer panels, `4px` (`rounded`) for controls/inner blocks, `0px` flat architectural sheet for documentation reading pages.
+- Radius discipline: `rounded-2xl` for the hero deck, `rounded-xl` (`12px`) for buttons, CTAs and cards, `rounded-lg` for chips and inner controls. No `rounded-full` pill CTAs; full rounding is reserved for status dots and bar tracks.
 - Tactile interactions use `active:scale-[0.98]` and `150ms–200ms` transitions.
 
 ## Explicit Anti-Patterns

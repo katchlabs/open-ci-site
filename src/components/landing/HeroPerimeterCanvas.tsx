@@ -1,55 +1,60 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Ephemeral Spot Runner dot-matrix field.
+ * Ephemeral Compute Rails.
  *
- * A retina-crisp grid of tiny rings sculpted into organic diagonal ribbons that
- * frame the left and right edges of the hero (the center stays pure white).
+ * Parallel build lanes frame the outer left and right margins of the hero while
+ * the center stays pure white. Each lane is a hairline track; ephemeral runner
+ * capsules boot on it, fill with CI Emerald left-to-right like a shard
+ * executing, flash a check on completion, then dissolve back to an empty rail
+ * (0 leaked VMs).
  *
- * Product-native behaviour:
- *  - Spot runner waves: rings fill cobalt as VMs boot, flash emerald as the job
- *    completes, then dissolve back to hollow rings (0 leaked VMs).
- *  - Preemption: a cluster flashes amber, then a glowing arc carries the work to
- *    an adjacent cluster where replacement runners boot.
- *  - Cursor: nearby dots wake into a gentle ripple. Clicking an empty edge area
- *    boots a fresh wave of runners.
- *  - prefers-reduced-motion: a calm static ribbon pattern, no animation loop.
+ *  - Spot preemption (~1 in 12): a capsule flashes amber and a curved transfer
+ *    arc carries its work to an adjacent rail, where it finishes in green.
+ *  - Cursor: moving near either edge speeds up nearby runners and sends an
+ *    emerald ripple across the adjacent rails. Clicking an edge boots runners.
+ *  - prefers-reduced-motion: a calm static frame, no animation loop.
  */
 
-const SPACING = 14;
-const RADIUS = 2.6;
 const MAX_DPR = 2;
+const RAIL_GAP = 22;
+const CAP_H = 6;
+const EDGE_PAD = 10;
 
 type RGB = readonly [number, number, number];
-const MIST: RGB = [191, 219, 254]; // #BFDBFE
-const MIST_DEEP: RGB = [147, 187, 248];
-const COBALT: RGB = [37, 99, 235]; // #2563EB
+const INK: RGB = [11, 13, 14]; // #0B0D0E
+const TINT: RGB = [209, 250, 229]; // #D1FAE5
 const EMERALD: RGB = [16, 185, 129]; // #10B981
+const EMERALD_DEEP: RGB = [5, 150, 105]; // #059669
 const AMBER: RGB = [245, 158, 11]; // #F59E0B
 
-// Boot timeline (seconds, relative to when the wavefront reaches a dot)
-const BOOT_FILL = 0.45;
-const BOOT_RUN_END = 1.9;
-const BOOT_DONE_END = 2.55;
-const BOOT_TOTAL = 3.3;
-const PREEMPT_TOTAL = 1.35;
-const ARC_DURATION = 0.85;
+// Phase durations (seconds, scaled by local speed)
+const BOOT = 0.38;
+const DONE = 0.55;
+const FADE = 0.5;
+const PREEMPT_HOLD = 0.42;
+const ARC_TIME = 0.62;
 
-interface Dot {
-  x: number;
+type Side = 0 | 1; // 0 = left, 1 = right
+type Phase = 'boot' | 'run' | 'preempt' | 'incoming' | 'done' | 'fade';
+
+interface Rail {
+  side: Side;
+  index: number;
   y: number;
-  seed: number;
-  edge: number; // 0 (center, never drawn) .. 1 (outer edge)
-  presence: number; // recomputed every frame
+  len: number;
 }
 
-interface Pulse {
-  kind: 'boot' | 'preempt';
-  x: number;
-  y: number;
-  t0: number;
-  radius: number;
-  speed: number;
+interface Capsule {
+  rail: Rail;
+  x: number; // left edge (px)
+  w: number;
+  phase: Phase;
+  age: number;
+  fill: number; // 0..1
+  runDur: number;
+  preemptAt: number; // fill fraction at which it is preempted, or -1
+  rescued: boolean; // landed via a transfer arc
 }
 
 interface Arc {
@@ -59,14 +64,21 @@ interface Arc {
   y1: number;
   cx: number;
   cy: number;
-  t0: number;
-  landed: boolean;
+  age: number;
+  target: Capsule;
 }
 
-interface Ripple {
+interface Burst {
   x: number;
   y: number;
-  t0: number;
+  age: number;
+}
+
+interface Wave {
+  side: Side;
+  x: number;
+  y: number;
+  age: number;
 }
 
 function mulberry32(seed: number) {
@@ -80,63 +92,28 @@ function mulberry32(seed: number) {
   };
 }
 
-/** Compact seeded 2D gradient noise, returns roughly [-1, 1]. */
-function createNoise2D(seed: number) {
-  const rand = mulberry32(seed);
-  const perm = new Uint8Array(512);
-  const p = Array.from({ length: 256 }, (_, i) => i);
-  for (let i = 255; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [p[i], p[j]] = [p[j], p[i]];
-  }
-  for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
-
-  const grad = (h: number, x: number, y: number) => {
-    switch (h & 7) {
-      case 0: return x + y;
-      case 1: return -x + y;
-      case 2: return x - y;
-      case 3: return -x - y;
-      case 4: return x;
-      case 5: return -x;
-      case 6: return y;
-      default: return -y;
-    }
-  };
-  const fade = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
-
-  return (x: number, y: number) => {
-    const xi = Math.floor(x);
-    const yi = Math.floor(y);
-    const xf = x - xi;
-    const yf = y - yi;
-    const X = xi & 255;
-    const Y = yi & 255;
-    const u = fade(xf);
-    const v = fade(yf);
-    const aa = perm[perm[X] + Y];
-    const ab = perm[perm[X] + Y + 1];
-    const ba = perm[perm[X + 1] + Y];
-    const bb = perm[perm[X + 1] + Y + 1];
-    const x1 = grad(aa, xf, yf) + u * (grad(ba, xf - 1, yf) - grad(aa, xf, yf));
-    const x2 = grad(ab, xf, yf - 1) + u * (grad(bb, xf - 1, yf - 1) - grad(ab, xf, yf - 1));
-    return (x1 + v * (x2 - x1)) * 0.95;
-  };
-}
-
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-function smoothstep(e0: number, e1: number, x: number) {
-  const t = clamp01((x - e0) / (e1 - e0));
+const smoothstep = (a: number, b: number, v: number) => {
+  const t = clamp01((v - a) / (b - a));
   return t * t * (3 - 2 * t);
-}
+};
 const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3);
-const mix = (a: RGB, b: RGB, t: number): [number, number, number] => [
-  a[0] + (b[0] - a[0]) * t,
-  a[1] + (b[1] - a[1]) * t,
-  a[2] + (b[2] - a[2]) * t,
-];
-const rgba = (c: readonly number[], a: number) =>
-  `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a.toFixed(3)})`;
+const easeInOut = (t: number) => {
+  const k = clamp01(t);
+  return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+};
+const rgba = (c: RGB, a: number) => `rgba(${c[0]},${c[1]},${c[2]},${clamp01(a).toFixed(3)})`;
+
+function pill(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  const r = Math.min(h / 2, w / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arc(x + w - r, y + r, r, -Math.PI / 2, Math.PI / 2);
+  ctx.lineTo(x + r, y + h);
+  ctx.arc(x + r, y + r, r, Math.PI / 2, (Math.PI * 3) / 2);
+  ctx.closePath();
+}
 
 export function HeroPerimeterCanvas({ className = '' }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -149,363 +126,432 @@ export function HeroPerimeterCanvas({ className = '' }: { className?: string }) 
     if (!ctx) return;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const noise = createNoise2D(7);
-    const grain = createNoise2D(19);
-    const rand = mulberry32(42);
+    const railLayer = document.createElement('canvas');
+    const railCtx = railLayer.getContext('2d');
 
     let width = 0;
     let height = 0;
-    let dots: Dot[] = [];
-    let pulses: Pulse[] = [];
+    let zone = 0;
+    let rails: Rail[][] = [[], []];
+    let capsules: Capsule[] = [];
     let arcs: Arc[] = [];
-    let ripples: Ripple[] = [];
+    let bursts: Burst[] = [];
+    let waves: Wave[] = [];
     let raf = 0;
     let running = false;
     let inView = true;
-    let lastNow = performance.now() / 1000;
-    let nextBoot = 0.35;
-    let nextPreempt = 3.2;
-    const start = performance.now() / 1000;
+    let last = performance.now() / 1000;
+    let spawnClock = 0;
+    let lastWave = 0;
+    let spawnCount = 0;
+    let rand = mulberry32(42);
 
-    const mouse = { x: -9999, y: -9999, energy: 0, target: 0 };
+    const mouse = { x: -9999, y: -9999, active: 0, target: 0 };
 
-    const zoneFor = (w: number) => (w >= 1180 ? 0.28 : w >= 900 ? 0.22 : w >= 640 ? 0.14 : 0.1);
+    const zoneFor = (w: number) => (w >= 1180 ? 0.23 : w >= 900 ? 0.17 : w >= 640 ? 0.1 : 0.07);
+
+    /* ── Layout ─────────────────────────────────────────── */
 
     const build = () => {
       const rect = host.getBoundingClientRect();
-      width = Math.round(rect.width);
-      height = Math.round(rect.height);
+      width = Math.max(1, Math.round(rect.width));
+      height = Math.max(1, Math.round(rect.height));
       const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
-      canvas.width = Math.max(1, Math.round(width * dpr));
-      canvas.height = Math.max(1, Math.round(height * dpr));
+      for (const c of [canvas, railLayer]) {
+        c.width = Math.round(width * dpr);
+        c.height = Math.round(height * dpr);
+      }
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      railCtx?.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const zone = zoneFor(width);
-      const next: Dot[] = [];
-      const cols = Math.ceil(width / SPACING) + 1;
-      const rows = Math.ceil(height / SPACING) + 1;
-      const offsetX = (width - (cols - 1) * SPACING) / 2;
-      for (let c = 0; c < cols; c++) {
-        const x = offsetX + c * SPACING;
-        const xn = x / width;
-        const left = smoothstep(zone, zone * 0.18, xn);
-        const right = smoothstep(1 - zone, 1 - zone * 0.18, xn);
-        const horiz = Math.max(left, right);
-        if (horiz <= 0.001) continue;
-        for (let r = 0; r < rows; r++) {
-          const y = 7 + r * SPACING;
-          const yn = y / height;
-          const vert = smoothstep(1, 0.86, yn) * smoothstep(0, 0.035, yn);
-          const edge = horiz * vert;
-          if (edge <= 0.001) continue;
-          next.push({ x, y, seed: rand(), edge, presence: 0 });
+      zone = width * zoneFor(width);
+      rand = mulberry32(42);
+      rails = [[], []];
+      capsules = [];
+      arcs = [];
+      bursts = [];
+      waves = [];
+
+      const top = 26;
+      const count = Math.max(4, Math.floor((height - top * 2) / RAIL_GAP) + 1);
+      const cy = height * 0.48;
+      const half = Math.max(1, height / 2);
+      const STEPS = 8;
+      for (const side of [0, 1] as Side[]) {
+        for (let i = 0; i < count; i++) {
+          const y = Math.round(top + i * RAIL_GAP) + 0.5;
+          const t = Math.min(1, Math.abs(y - cy) / half);
+          // Shorter near the vertical center, longer toward the corners, in clean steps.
+          const base = 0.46 + 0.54 * Math.pow(t, 1.25);
+          const jitter = (rand() - 0.5) * 2.2;
+          const steps = Math.max(2, Math.min(STEPS, Math.round(base * STEPS + jitter)));
+          rails[side].push({ side, index: i, y, len: (steps / STEPS) * zone });
         }
       }
-      dots = next;
+      drawRails();
     };
 
-    /** Organic diagonal ribbons, mirrored per side and drifting slowly over time. */
-    const presenceAt = (d: Dot, t: number) => {
-      const mirroredX = d.x < width / 2 ? d.x : width - d.x;
-      const diag = mirroredX * 0.85 + d.y;
-      const warp = noise(mirroredX * 0.0038 + 3.1, d.y * 0.0038 + t * 0.026) * 2.6;
-      const wave = Math.sin(diag * 0.0185 - t * 0.34 + warp) * 0.5 + 0.5;
-      const band = wave * wave * (3 - 2 * wave);
-      const g = grain(d.x * 0.009 + t * 0.035, d.y * 0.009) * 0.5 + 0.5;
-      const field = band * 0.74 + g * 0.26;
-      const shaped = field * Math.pow(d.edge, 0.55) + d.edge * 0.1;
-      return clamp01((shaped - 0.54) / 0.24);
+    const edgeFade = (x: number) => {
+      const d = x < width / 2 ? x : width - x;
+      return 1 - smoothstep(zone * 0.62, zone * 1.02, d);
     };
 
-    const pickVisibleDot = (minPresence: number, avoid?: { x: number; y: number }) => {
-      for (let i = 0; i < 40; i++) {
-        const d = dots[Math.floor(rand() * dots.length)];
-        if (!d || d.presence < minPresence || d.edge < 0.45) continue;
-        if (avoid && Math.hypot(d.x - avoid.x, d.y - avoid.y) < 80) continue;
-        return d;
-      }
-      return undefined;
-    };
-
-    const spawnBoot = (x: number, y: number, t: number, radius = 34 + rand() * 30) => {
-      pulses.push({ kind: 'boot', x, y, t0: t, radius, speed: 150 + rand() * 60 });
-    };
-
-    const spawnPreempt = (t: number) => {
-      const src = pickVisibleDot(0.55);
-      if (!src) return;
-      pulses.push({ kind: 'preempt', x: src.x, y: src.y, t0: t, radius: 30, speed: 260 });
-      // Replacement cluster: same side, 110–220px away vertically
-      const dir = src.y > height * 0.5 ? -1 : 1;
-      const ty = Math.max(30, Math.min(height * 0.85, src.y + dir * (110 + rand() * 110)));
-      let target: Dot | undefined;
-      let best = Infinity;
-      for (const d of dots) {
-        if ((d.x < width / 2) !== (src.x < width / 2) || d.edge < 0.5) continue;
-        const score = Math.abs(d.y - ty) + Math.abs(d.x - src.x) * 0.4 - d.presence * 40;
-        if (score < best) {
-          best = score;
-          target = d;
+    const drawRails = () => {
+      if (!railCtx) return;
+      railCtx.clearRect(0, 0, width, height);
+      for (const side of [0, 1] as Side[]) {
+        for (const r of rails[side]) {
+          const x0 = side === 0 ? 0 : width;
+          const x1 = side === 0 ? r.len : width - r.len;
+          const g = railCtx.createLinearGradient(x0, 0, x1, 0);
+          g.addColorStop(0, rgba(INK, 0.06));
+          g.addColorStop(0.7, rgba(INK, 0.05));
+          g.addColorStop(1, rgba(INK, 0));
+          railCtx.strokeStyle = g;
+          railCtx.lineWidth = 1;
+          railCtx.beginPath();
+          railCtx.moveTo(x0, r.y);
+          railCtx.lineTo(x1, r.y);
+          railCtx.stroke();
+          // Architectural end tick where the lane stops
+          const tickX = side === 0 ? r.len * 0.82 : width - r.len * 0.82;
+          railCtx.fillStyle = rgba(INK, 0.07 * edgeFade(tickX));
+          railCtx.fillRect(Math.round(tickX) - 0.5, r.y - 2, 1, 4);
         }
       }
-      if (!target) return;
-      const mx = (src.x + target.x) / 2;
-      const my = (src.y + target.y) / 2;
-      const bulge = (src.x < width / 2 ? 1 : -1) * (50 + rand() * 30);
-      arcs.push({
-        x0: src.x,
-        y0: src.y,
-        x1: target.x,
-        y1: target.y,
-        cx: mx + bulge,
-        cy: my,
-        t0: t + 0.5,
-        landed: false,
-      });
     };
 
-    /** Returns activation for a dot: color, fill alpha, scale and boost to presence. */
-    const activationFor = (d: Dot, t: number) => {
-      let bestWeight = 0;
-      let color: [number, number, number] = [COBALT[0], COBALT[1], COBALT[2]];
-      let fill = 0;
-      let scale = 1;
-      for (const p of pulses) {
-        const dist = Math.hypot(d.x - p.x, d.y - p.y);
-        if (dist > p.radius) continue;
-        const falloff = 1 - (dist / p.radius) ** 2;
-        // Per-dot jitter so clusters ignite organically, not as perfect discs
-        const lt = t - p.t0 - dist / p.speed - d.seed * 0.18;
-        if (lt < 0) continue;
-        if (p.kind === 'boot') {
-          if (lt > BOOT_TOTAL) continue;
-          let c: [number, number, number];
-          let f: number;
-          let s = 1;
-          let w: number;
-          if (lt < BOOT_FILL) {
-            const k = easeOut(lt / BOOT_FILL);
-            c = mix(MIST, COBALT, k);
-            f = k;
-            w = k;
-          } else if (lt < BOOT_RUN_END) {
-            c = [COBALT[0], COBALT[1], COBALT[2]];
-            f = 0.88 + 0.12 * Math.sin(lt * 9 + d.seed * 20);
-            w = 1;
-          } else if (lt < BOOT_DONE_END) {
-            const k = (lt - BOOT_RUN_END) / (BOOT_DONE_END - BOOT_RUN_END);
-            c = mix(COBALT, EMERALD, Math.min(1, k * 2.4));
-            f = 1;
-            s = 1 + 0.32 * Math.sin(Math.PI * k);
-            w = 1;
-          } else {
-            const k = (lt - BOOT_DONE_END) / (BOOT_TOTAL - BOOT_DONE_END);
-            c = mix(EMERALD, MIST, easeOut(k));
-            f = 1 - easeOut(k);
-            w = 1 - k;
-          }
-          const weight = w * falloff;
-          if (weight > bestWeight) {
-            bestWeight = weight;
-            color = c;
-            fill = f * Math.min(1, falloff * 1.6);
-            scale = 1 + (s - 1) * falloff;
-          }
-        } else {
-          if (lt > PREEMPT_TOTAL) continue;
-          const blink = lt < 0.22 ? 1 : lt < 0.34 ? 0.35 : lt < 0.9 ? 1 : 1 - (lt - 0.9) / (PREEMPT_TOTAL - 0.9);
-          const weight = blink * falloff * 1.2;
-          if (weight > bestWeight) {
-            bestWeight = weight;
-            color = [AMBER[0], AMBER[1], AMBER[2]];
-            fill = blink;
-            scale = 1 + 0.18 * blink;
-          }
-        }
+    /* ── Simulation ─────────────────────────────────────── */
+
+    const overlaps = (rail: Rail, x: number, w: number) =>
+      capsules.some((c) => c.rail === rail && x < c.x + c.w + 12 && x + w + 12 > c.x);
+
+    const placeOn = (rail: Rail, w: number): number | null => {
+      const usable = rail.len * 0.9 - w - EDGE_PAD;
+      if (usable < 4) return null;
+      for (let tries = 0; tries < 4; tries++) {
+        const offset = EDGE_PAD + rand() * usable;
+        const x = rail.side === 0 ? offset : width - offset - w;
+        if (!overlaps(rail, x, w)) return x;
       }
-      return { weight: Math.min(1, bestWeight), color, fill, scale };
+      return null;
     };
 
-    const draw = (now: number, animate: boolean) => {
-      const t = now - start;
-      const dt = Math.min(0.05, now - lastNow);
-      lastNow = now;
+    const spawn = (rail: Rail, opts: Partial<Capsule> = {}): Capsule | null => {
+      const w = opts.w ?? 26 + Math.round(rand() * 48);
+      const x = opts.x ?? placeOn(rail, w);
+      if (x === null || x === undefined) return null;
+      spawnCount += 1;
+      const cap: Capsule = {
+        rail,
+        x,
+        w,
+        phase: 'boot',
+        age: 0,
+        fill: 0,
+        runDur: 1.1 + rand() * 1.6,
+        preemptAt: spawnCount % 12 === 7 ? 0.32 + rand() * 0.3 : -1,
+        rescued: false,
+        ...opts,
+      };
+      capsules.push(cap);
+      return cap;
+    };
 
-      if (animate) {
-        // Schedule product-native events
-        if (t >= nextBoot && dots.length) {
-          const d = pickVisibleDot(0.6);
-          if (d) spawnBoot(d.x, d.y, t);
-          nextBoot = t + 0.75 + rand() * 1.05;
-        }
-        if (t >= nextPreempt && dots.length) {
-          spawnPreempt(t);
-          nextPreempt = t + 5.5 + rand() * 3.5;
-        }
-        pulses = pulses.filter((p) => t - p.t0 < (p.kind === 'boot' ? BOOT_TOTAL : PREEMPT_TOTAL) + p.radius / p.speed + 0.3);
-        ripples = ripples.filter((r) => t - r.t0 < 0.9);
-        mouse.energy += (mouse.target - mouse.energy) * Math.min(1, dt * 5);
+    const spawnRandom = () => {
+      const side: Side = rand() < 0.5 ? 0 : 1;
+      const list = rails[side];
+      if (!list.length) return;
+      // Favor longer rails (corners) a little
+      for (let tries = 0; tries < 3; tries++) {
+        const rail = list[Math.floor(rand() * list.length)];
+        if (rand() < 0.35 + 0.65 * (rail.len / Math.max(1, zone)) && spawn(rail)) return;
+      }
+    };
+
+    const preempt = (c: Capsule) => {
+      c.phase = 'preempt';
+      c.age = 0;
+      const list = rails[c.rail.side];
+      const dirs = [1, -1, 2, -2, 3, -3].sort(() => rand() - 0.5);
+      for (const d of dirs) {
+        const rail = list[c.rail.index + d];
+        if (!rail) continue;
+        const w = c.w;
+        const x = placeOn(rail, w);
+        if (x === null) continue;
+        const target = spawn(rail, { x, w, phase: 'incoming', fill: c.fill, preemptAt: -1, runDur: 0.75, rescued: true });
+        if (!target) continue;
+        const x0 = c.x + c.w * c.fill;
+        const x1 = x + 3;
+        const bow = c.rail.side === 0 ? -1 : 1;
+        arcs.push({
+          x0,
+          y0: c.rail.y,
+          x1,
+          y1: rail.y,
+          cx: (x0 + x1) / 2 + bow * (26 + Math.abs(rail.y - c.rail.y) * 0.6),
+          cy: (c.rail.y + rail.y) / 2,
+          age: -PREEMPT_HOLD * 0.6,
+          target,
+        });
+        return;
+      }
+    };
+
+    const speedAt = (c: Capsule) => {
+      if (mouse.active <= 0.01) return 1;
+      const dy = Math.abs(c.rail.y - mouse.y);
+      const dx = Math.abs(c.x + c.w / 2 - mouse.x);
+      const k = (1 - smoothstep(0, 120, dy)) * (1 - smoothstep(60, 260, dx));
+      return 1 + 1.6 * k * mouse.active;
+    };
+
+    const step = (dt: number) => {
+      mouse.active += (mouse.target - mouse.active) * Math.min(1, dt * 5);
+
+      spawnClock += dt;
+      const interval = width >= 900 ? 0.11 : 0.2;
+      while (spawnClock > interval) {
+        spawnClock -= interval;
+        spawnRandom();
       }
 
-      ctx.clearRect(0, 0, width, height);
-
-      // Pass 1: base field (batched by alpha bucket), collect active dots
-      const BUCKETS = 4;
-      const ringPaths: Path2D[] = Array.from({ length: BUCKETS }, () => new Path2D());
-      const fillPaths: Path2D[] = Array.from({ length: BUCKETS }, () => new Path2D());
-      const active: { d: Dot; r: number; color: readonly number[]; fill: number; ring: number }[] = [];
-
-      for (const d of dots) {
-        const base = presenceAt(d, animate ? t : 0);
-        d.presence = base;
-        const act = animate ? activationFor(d, t) : null;
-
-        let wake = 0;
-        if (animate && mouse.energy > 0.01) {
-          const dist = Math.hypot(d.x - mouse.x, d.y - mouse.y);
-          if (dist < 220) {
-            const fall = Math.exp(-((dist / 135) ** 2));
-            const ripple = 0.5 + 0.5 * Math.sin(dist * 0.075 - t * 5.2);
-            wake = fall * (0.3 + 0.7 * ripple) * mouse.energy * Math.min(1, d.edge * 2.2);
-          }
-        }
-
-        const actWeight = act ? act.weight : 0;
-        const presence = Math.max(base, actWeight * d.edge * 0.95, wake * 0.9);
-        if (presence < 0.04) continue;
-
-        const r = RADIUS * (0.34 + 0.66 * Math.sqrt(presence));
-
-        if (actWeight > 0.02 || wake > 0.04) {
-          let color: readonly number[] = MIST_DEEP;
-          let fill = 0;
-          let scale = 1;
-          if (act && actWeight > 0.02) {
-            color = act.color;
-            fill = act.fill;
-            scale = act.scale;
-          }
-          if (wake > 0.04) {
-            const wakeColor = mix(MIST_DEEP, COBALT, Math.min(1, wake * 1.1));
-            if (actWeight < wake) {
-              color = wakeColor;
-              fill = Math.max(fill, wake * 0.8);
+      for (const c of capsules) {
+        const s = speedAt(c);
+        c.age += dt * s;
+        switch (c.phase) {
+          case 'boot':
+            if (c.age >= BOOT) {
+              c.phase = 'run';
+              c.age = 0;
             }
-            scale *= 1 + wake * 0.3;
-          }
-          active.push({ d, r: r * scale, color, fill, ring: 0.55 + 0.45 * presence });
-          continue;
+            break;
+          case 'run':
+            c.fill = Math.min(1, c.fill + (dt * s) / c.runDur);
+            if (c.preemptAt > 0 && c.fill >= c.preemptAt) preempt(c);
+            else if (c.fill >= 1) {
+              c.phase = 'done';
+              c.age = 0;
+              bursts.push({ x: c.x + c.w, y: c.rail.y, age: 0 });
+            }
+            break;
+          case 'preempt':
+            if (c.age >= PREEMPT_HOLD + FADE) c.phase = 'fade';
+            break;
+          case 'incoming':
+            break;
+          case 'done':
+            if (c.age >= DONE) {
+              c.phase = 'fade';
+              c.age = 0;
+            }
+            break;
+          case 'fade':
+            break;
         }
+      }
+      capsules = capsules.filter(
+        (c) => !(c.phase === 'fade' && c.age >= FADE) && !(c.phase === 'preempt' && c.age >= PREEMPT_HOLD + FADE)
+      );
 
-        const bucket = Math.min(BUCKETS - 1, Math.floor(presence * BUCKETS));
-        if (presence > 0.8 && d.seed < 0.42) {
-          fillPaths[bucket].moveTo(d.x + r, d.y);
-          fillPaths[bucket].arc(d.x, d.y, r, 0, Math.PI * 2);
-        } else {
-          ringPaths[bucket].moveTo(d.x + r, d.y);
-          ringPaths[bucket].arc(d.x, d.y, r, 0, Math.PI * 2);
+      for (const a of arcs) {
+        a.age += dt;
+        if (a.age >= ARC_TIME && a.target.phase === 'incoming') {
+          a.target.phase = 'run';
+          a.target.age = 0;
+          bursts.push({ x: a.x1, y: a.y1, age: 0 });
+        }
+      }
+      arcs = arcs.filter((a) => a.age < ARC_TIME + 0.4);
+      for (const b of bursts) b.age += dt;
+      bursts = bursts.filter((b) => b.age < 0.7);
+      for (const w of waves) w.age += dt;
+      waves = waves.filter((w) => w.age < 1.1);
+    };
+
+    /* ── Rendering ──────────────────────────────────────── */
+
+    const drawCapsule = (c: Capsule) => {
+      const y = c.rail.y - CAP_H / 2;
+      const fade = edgeFade(c.x + c.w / 2);
+      if (fade <= 0.01) return;
+
+      let bodyAlpha = 1;
+      let fillColor: RGB = EMERALD;
+      let fillAlpha = 1;
+      let fill = c.fill;
+
+      switch (c.phase) {
+        case 'boot':
+          bodyAlpha = easeOut(c.age / BOOT);
+          fill = 0;
+          break;
+        case 'incoming':
+          bodyAlpha = 0.55;
+          break;
+        case 'preempt': {
+          fillColor = AMBER;
+          const flash = 0.65 + 0.35 * Math.sin(c.age * 34);
+          const out = c.age > PREEMPT_HOLD ? 1 - (c.age - PREEMPT_HOLD) / FADE : 1;
+          fillAlpha = flash * out;
+          bodyAlpha = out;
+          break;
+        }
+        case 'done':
+          fill = 1;
+          fillColor = EMERALD;
+          break;
+        case 'fade': {
+          const k = easeInOut(c.age / FADE);
+          fill = 1;
+          fillAlpha = 1 - k;
+          bodyAlpha = 1 - k;
+          break;
         }
       }
 
-      ctx.lineWidth = 1.15;
-      for (let b = 0; b < BUCKETS; b++) {
-        const a = 0.38 + (b / (BUCKETS - 1)) * 0.62;
-        ctx.strokeStyle = rgba(MIST_DEEP, a);
-        ctx.stroke(ringPaths[b]);
-        ctx.fillStyle = rgba(MIST_DEEP, a * 0.85);
-        ctx.fill(fillPaths[b]);
+      // Empty capsule (booted VM, waiting for work)
+      ctx.fillStyle = rgba(c.phase === 'preempt' ? [254, 243, 199] : TINT, bodyAlpha * fade);
+      pill(ctx, c.x, y, c.w, CAP_H);
+      ctx.fill();
+
+      // Executing shard
+      if (fill > 0) {
+        const fw = Math.max(CAP_H, c.w * fill);
+        ctx.fillStyle = rgba(fillColor, fillAlpha * fade);
+        pill(ctx, c.x, y, fw, CAP_H);
+        ctx.fill();
+        if (c.phase === 'run') {
+          const hx = c.x + fw - CAP_H / 2;
+          const glow = ctx.createRadialGradient(hx, c.rail.y, 0, hx, c.rail.y, 9);
+          glow.addColorStop(0, rgba(EMERALD, 0.35 * fade));
+          glow.addColorStop(1, rgba(EMERALD, 0));
+          ctx.fillStyle = glow;
+          ctx.fillRect(hx - 9, c.rail.y - 9, 18, 18);
+        }
       }
 
-      // Pass 2: active runners
-      for (const a of active) {
-        if (a.fill > 0.02) {
-          ctx.beginPath();
-          ctx.arc(a.d.x, a.d.y, a.r, 0, Math.PI * 2);
-          ctx.fillStyle = rgba(a.color, Math.min(1, a.fill));
-          ctx.fill();
-        }
+      // Completion check, just past the capsule head
+      if (c.phase === 'done' || (c.phase === 'fade' && c.age < FADE * 0.6)) {
+        const k = c.phase === 'done' ? c.age / DONE : 1;
+        const a = (c.phase === 'done' ? 1 : 1 - c.age / (FADE * 0.6)) * fade;
+        const s = 0.6 + 0.4 * easeOut(k * 2.5);
+        const cx = c.x + c.w + 9;
+        const cy = c.rail.y;
+        ctx.strokeStyle = rgba(EMERALD_DEEP, a);
+        ctx.lineWidth = 1.6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.arc(a.d.x, a.d.y, a.r, 0, Math.PI * 2);
-        ctx.lineWidth = 1.2;
-        ctx.strokeStyle = rgba(a.color, Math.min(1, a.ring));
+        ctx.moveTo(cx - 3.2 * s, cy + 0.2 * s);
+        ctx.lineTo(cx - 1 * s, cy + 2.4 * s);
+        ctx.lineTo(cx + 3.4 * s, cy - 2.6 * s);
         ctx.stroke();
       }
+    };
 
-      if (!animate) return;
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(railLayer, 0, 0, width, height);
 
-      // Pass 3: preemption arcs carrying work to replacement clusters
-      for (const arc of arcs) {
-        const k = (t - arc.t0) / ARC_DURATION;
-        if (k < 0) continue;
-        const p = easeOut(Math.min(1, k));
-        const tail = Math.max(0, p - 0.38);
-        const fadeOut = k > 1 ? Math.max(0, 1 - (k - 1) * 3) : 1;
-        if (fadeOut <= 0) continue;
+      // Cursor ripple: rails light up outward from the pointer row
+      for (const w of waves) {
+        for (const r of rails[w.side]) {
+          const rows = Math.abs(r.y - w.y) / RAIL_GAP;
+          if (rows > 6) continue;
+          const local = w.age - rows * 0.055;
+          if (local <= 0 || local > 0.7) continue;
+          const a = Math.sin((local / 0.7) * Math.PI) * (1 - rows / 7) * 0.55;
+          const spread = 34 + local * 120;
+          const x0 = Math.max(w.side === 0 ? 0 : width - r.len, w.x - spread);
+          const x1 = Math.min(w.side === 0 ? r.len : width, w.x + spread);
+          if (x1 <= x0) continue;
+          const g = ctx.createLinearGradient(x0, 0, x1, 0);
+          g.addColorStop(0, rgba(EMERALD, 0));
+          g.addColorStop(0.5, rgba(EMERALD, a * edgeFade(w.x)));
+          g.addColorStop(1, rgba(EMERALD, 0));
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 1.25;
+          ctx.beginPath();
+          ctx.moveTo(x0, r.y);
+          ctx.lineTo(x1, r.y);
+          ctx.stroke();
+        }
+      }
+
+      for (const c of capsules) drawCapsule(c);
+
+      // Spot transfer arcs: amber at the source, emerald on landing
+      for (const a of arcs) {
+        if (a.age <= 0) continue;
+        const p = easeInOut(Math.min(1, a.age / ARC_TIME));
+        const tail = Math.max(0, p - 0.45);
+        const out = a.age > ARC_TIME ? 1 - (a.age - ARC_TIME) / 0.4 : 1;
         const at = (s: number) => {
           const u = 1 - s;
-          return [
-            u * u * arc.x0 + 2 * u * s * arc.cx + s * s * arc.x1,
-            u * u * arc.y0 + 2 * u * s * arc.cy + s * s * arc.y1,
-          ] as const;
+          return [u * u * a.x0 + 2 * u * s * a.cx + s * s * a.x1, u * u * a.y0 + 2 * u * s * a.cy + s * s * a.y1] as const;
         };
-        const steps = 22;
-        for (let i = 0; i < steps; i++) {
-          const s0 = tail + ((p - tail) * i) / steps;
-          const s1 = tail + ((p - tail) * (i + 1)) / steps;
+        const fade = edgeFade((a.x0 + a.x1) / 2);
+        const segs = 18;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 1.4;
+        for (let i = 0; i < segs; i++) {
+          const s0 = tail + ((p - tail) * i) / segs;
+          const s1 = tail + ((p - tail) * (i + 1)) / segs;
           const [ax, ay] = at(s0);
           const [bx, by] = at(s1);
+          const mixK = s1;
+          const col: RGB = [
+            Math.round(AMBER[0] + (EMERALD[0] - AMBER[0]) * mixK),
+            Math.round(AMBER[1] + (EMERALD[1] - AMBER[1]) * mixK),
+            Math.round(AMBER[2] + (EMERALD[2] - AMBER[2]) * mixK),
+          ];
+          ctx.strokeStyle = rgba(col, ((i + 1) / segs) * 0.9 * out * fade);
           ctx.beginPath();
           ctx.moveTo(ax, ay);
           ctx.lineTo(bx, by);
-          ctx.lineWidth = 1.6;
-          ctx.lineCap = 'round';
-          ctx.strokeStyle = rgba(COBALT, ((i + 1) / steps) * 0.85 * fadeOut);
           ctx.stroke();
         }
-        if (k <= 1) {
+        if (a.age < ARC_TIME) {
           const [hx, hy] = at(p);
-          const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, 11);
-          glow.addColorStop(0, rgba(COBALT, 0.45));
-          glow.addColorStop(1, rgba(COBALT, 0));
-          ctx.fillStyle = glow;
+          ctx.fillStyle = rgba(p < 0.5 ? AMBER : EMERALD, fade);
           ctx.beginPath();
-          ctx.arc(hx, hy, 11, 0, Math.PI * 2);
+          ctx.arc(hx, hy, 2.4, 0, Math.PI * 2);
           ctx.fill();
-          ctx.beginPath();
-          ctx.arc(hx, hy, 2.8, 0, Math.PI * 2);
-          ctx.fillStyle = rgba(COBALT, 1);
-          ctx.fill();
-        }
-        if (k >= 1 && !arc.landed) {
-          arc.landed = true;
-          spawnBoot(arc.x1, arc.y1, t, 46);
-          ripples.push({ x: arc.x1, y: arc.y1, t0: t });
         }
       }
-      arcs = arcs.filter((a) => t - a.t0 < ARC_DURATION + 0.5);
 
-      // Pass 4: landing ripples
-      for (const r of ripples) {
-        const k = (t - r.t0) / 0.9;
+      // Completion ring bursts
+      for (const b of bursts) {
+        const k = b.age / 0.7;
+        const fade = edgeFade(b.x);
+        ctx.strokeStyle = rgba(EMERALD, (1 - k) * 0.55 * fade);
+        ctx.lineWidth = 1.2;
         ctx.beginPath();
-        ctx.arc(r.x, r.y, 6 + easeOut(k) * 42, 0, Math.PI * 2);
-        ctx.lineWidth = 1.4;
-        ctx.strokeStyle = rgba(COBALT, (1 - k) * 0.5);
+        ctx.arc(b.x, b.y, 3 + easeOut(k) * 11, 0, Math.PI * 2);
         ctx.stroke();
       }
+
     };
 
+    /* ── Loop & lifecycle ───────────────────────────────── */
+
     const loop = () => {
-      draw(performance.now() / 1000, true);
+      const now = performance.now() / 1000;
+      const dt = Math.min(0.05, now - last);
+      last = now;
+      step(dt);
+      draw();
       raf = requestAnimationFrame(loop);
     };
 
     const startLoop = () => {
       if (running || reducedMotion.matches || !inView || document.hidden) return;
       running = true;
-      lastNow = performance.now() / 1000;
+      last = performance.now() / 1000;
       raf = requestAnimationFrame(loop);
     };
     const stopLoop = () => {
@@ -513,15 +559,30 @@ export function HeroPerimeterCanvas({ className = '' }: { className?: string }) 
       cancelAnimationFrame(raf);
     };
 
-    const renderStatic = () => draw(performance.now() / 1000, false);
+    /** Deterministic still frame: a few runners mid-flight, a few complete. */
+    const renderStatic = () => {
+      for (let i = 0; i < 26; i++) spawnRandom();
+      capsules.forEach((c, i) => {
+        c.phase = i % 4 === 0 ? 'done' : 'run';
+        c.age = i % 4 === 0 ? DONE * 0.9 : 0;
+        c.fill = i % 4 === 0 ? 1 : 0.2 + ((i * 37) % 70) / 100;
+      });
+      draw();
+    };
+
+    const warmStart = () => {
+      // Pre-roll the simulation so the first painted frame already looks alive.
+      for (let i = 0; i < 90; i++) step(1 / 30);
+      draw();
+    };
 
     const refresh = () => {
       build();
       if (reducedMotion.matches) {
         stopLoop();
         renderStatic();
-      } else if (!running) {
-        renderStatic();
+      } else {
+        warmStart();
         startLoop();
       }
     };
@@ -532,7 +593,14 @@ export function HeroPerimeterCanvas({ className = '' }: { className?: string }) 
       const y = e.clientY - rect.top;
       mouse.x = x;
       mouse.y = y;
-      mouse.target = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height ? 1 : 0;
+      const d = x < width / 2 ? x : width - x;
+      const nearEdge = d < zone * 1.15 && y >= 0 && y <= height;
+      mouse.target = nearEdge ? 1 : 0;
+      const t = performance.now() / 1000;
+      if (nearEdge && running && t - lastWave > 0.32) {
+        lastWave = t;
+        waves.push({ side: x < width / 2 ? 0 : 1, x, y, age: 0 });
+      }
     };
     const onPointerLeave = () => {
       mouse.target = 0;
@@ -544,12 +612,15 @@ export function HeroPerimeterCanvas({ className = '' }: { className?: string }) 
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const xn = x / width;
-      const zone = zoneFor(width);
-      if (xn > zone && xn < 1 - zone) return;
-      const t = performance.now() / 1000 - start;
-      spawnBoot(x, y, t, 70);
-      ripples.push({ x, y, t0: t });
+      const d = x < width / 2 ? x : width - x;
+      if (d > zone) return;
+      const side: Side = x < width / 2 ? 0 : 1;
+      const nearest = Math.round((y - (rails[side][0]?.y ?? 0)) / RAIL_GAP);
+      for (const off of [0, -1, 1, -2, 2]) {
+        const rail = rails[side][nearest + off];
+        if (rail) spawn(rail, { runDur: 0.7 + rand() * 0.6, preemptAt: -1 });
+      }
+      waves.push({ side, x, y, age: 0 });
     };
 
     const resizeObserver = new ResizeObserver(() => refresh());
@@ -592,7 +663,7 @@ export function HeroPerimeterCanvas({ className = '' }: { className?: string }) 
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 ${className}`}
+      className={`pointer-events-none absolute inset-0 [mask-image:linear-gradient(90deg,#000_0%,#000_16%,transparent_27%,transparent_73%,#000_84%,#000_100%)] ${className}`}
     />
   );
 }
